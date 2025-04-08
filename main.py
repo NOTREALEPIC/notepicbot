@@ -39,14 +39,14 @@ async def pass_command(interaction: discord.Interaction, modelname: str):
     # Embed with formatted block content
     embed = Embed(title=f"Access: {modelname}", color=0x2ecc71)
 
-   info = (
-    f"``FILE NAME``        ```{modelname}```\n"
-    f"``FILE SIZE``        ```{file_size}```   ``VERSION``       ```{version}```\n"
-    f"``FOR``              ```{for_}```        ``LAST UPDATE``   ```{last_update}```\n"
-    f"``LICENSE``          ```{license_type}```\n"
-    f"``LICENSE DETAILS``  ```{license_desc}```\n"
-    f"``PASSWORD``         ```{password}```"
-    )
+    embed.add_field(name="📄 FILE NAME", value=f"```{modelname}```", inline=False)
+    embed.add_field(name="📦 FILE SIZE", value=f"```{file_size}```", inline=True)
+    embed.add_field(name="🔁 VERSION", value=f"```{version}```", inline=True)
+    embed.add_field(name="🎮 FOR", value=f"```{for_}```", inline=True)
+    embed.add_field(name="🕒 LAST UPDATE", value=f"```{last_update}```", inline=True)
+    embed.add_field(name="📝 LICENSE", value=f"```{license_type}```", inline=True)
+    embed.add_field(name="📘 LICENSE DETAILS", value=f"```{license_desc}```", inline=False)
+    embed.add_field(name="🔐 PASSWORD", value=f"```{password}```", inline=False)
 
     embed.description = info
 
