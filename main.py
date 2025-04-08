@@ -18,18 +18,6 @@ intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 tree = bot.tree
 
-# ✅ Model list & passwords (static dictionary)
-passwords = {
-    "BMW_M5": "bmwpass123",
-    "Lamborghini_Aventador": "lambo456",
-    "Tesla_ModelS": "tesla789",
-    "Supra_JDM": "jdm420",
-    "Dodge_Challenger": "challenger007",
-    "Nissan_GTR": "gtrgodzilla",
-    "ASU_Mods_Pack": "asu-modpack-v2"
-}
-
-model_files = list(passwords.keys())
 
 # ✅ Scam link blocker
 @bot.event
@@ -53,27 +41,37 @@ async def on_message(message):
 
     await bot.process_commands(message)
 
-# ✅ Autocomplete function for /pass
+# Autocomplete list
 async def model_autocomplete(interaction: discord.Interaction, current: str):
     return [
         app_commands.Choice(name=model, value=model)
-        for model in model_files if current.lower() in model.lower()
+        for model in files_data if current.lower() in model.lower()
     ][:25]
 
-# ✅ /pass command
-@tree.command(name="pass", description="Get password for a specific model")
-@app_commands.describe(modelname="Choose a model or file name")
+@tree.command(name="pass", description="Get info & password for a model")
+@app_commands.describe(modelname="Choose a model")
 @app_commands.autocomplete(modelname=model_autocomplete)
 @app_commands.checks.has_role("Z-Mod")
 async def pass_command(interaction: discord.Interaction, modelname: str):
-    password = passwords.get(modelname, "No password found for this model.")
-    embed = discord.Embed(
-        title=f"🔑 Password for {modelname}",
-        description=f"`{password}`",
-        color=discord.Color.blue()
-    )
+    if modelname not in files_data:
+        await interaction.response.send_message("❌ Model not found!", ephemeral=True)
+        return
+
+    data = files_data[modelname]
+    license_type = data["license"]
+    license_desc = license_descriptions.get(license_type, "No description available.")
+
+    embed = Embed(title=f" Access: {modelname}", color=0x2ecc71)
+    embed.add_field(name=" File Name", value=modelname, inline=False)
+    embed.add_field(name=" File Size", value=data["file_size"], inline=True)
+    embed.add_field(name=" Version", value=data["version"], inline=True)
+    embed.add_field(name=" For", value=data["for"], inline=True)
+    embed.add_field(name=" Last Update", value=data["last_update"], inline=True)
+    embed.add_field(name=" License", value=license_type, inline=True)
+    embed.add_field(name=" License Description", value=license_desc, inline=False)
+    embed.add_field(name=" Password", value=f"`{data['password']}`", inline=False)
+
     await interaction.response.send_message(embed=embed, ephemeral=True)
-    print(f"[PASS LOG] {interaction.user} requested password for {modelname}")
 
 # ✅ Unauthorized user handling for /pass
 @pass_command.error
