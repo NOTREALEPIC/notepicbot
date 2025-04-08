@@ -39,12 +39,12 @@ async def pass_command(interaction: discord.Interaction, modelname: str):
     # Embed with formatted block content
     embed = Embed(title=f"Access: {modelname}", color=0x2ecc71)
 
-    info = f"""```[FILE NAME       ] {modelname}
-[FILE SIZE       ] {file_size:<15} [VERSION        ] {version}
-[FOR             ] {for_:<15} [LAST UPDATE    ] {last_update}
-[LICENSE         ] {license_type}
-[LICENSE DETAILS ] {license_desc}
-[PASSWORD        ] {password}```"""
+    info = f"""``FILE NAME`` {modelname}
+``FILE SIZE`` {file_size:<15} ``VERSION`` {version}
+``FOR`` {for_:<15} ``LAST UPDATE`` {last_update}
+``LICENSE`` {license_type}
+``LICENSE DETAILS`` {license_desc}
+``PASSWORD`` {password}"""
 
     embed.description = info
 
