@@ -1,18 +1,28 @@
+# files.py
+
 files_data = {
     "BMW_M5": {
-        "file_size": "```34 MB```",
-        "version": "```v1.2```",
-        "for": "```GTA 5```",
-        "last_update": "```2025-04-08```",
-        "license": "Free-Personal",
-        "password": "```bmwpass123```"
+        "size": "25MB",
+        "version": "v1.2",
+        "for": "GTA 5",
+        "last_update": "2025-04-08",
+        "license": "ASU-Public",
+        "password": "bmwpass123"
     },
     "Lamborghini_Aventador": {
-        "file_size": "58 MB",
-        "version": "v3.0",
+        "size": "32MB",
+        "version": "v2.1",
         "for": "GTA 5",
-        "last_update": "2025-03-01",
-        "license": "ASU-Commercial",
-        "password": "lambo456"
-    }
+        "last_update": "2025-03-21",
+        "license": "ZMod-License",
+        "password": "lambo2025"
+    },
+    "Toyota_Supra": {
+        "size": "28MB",
+        "version": "v1.0",
+        "for": "GTA SA",
+        "last_update": "2025-01-15",
+        "license": "ASU-Public",
+        "password": "supra123"
+    },
 }
