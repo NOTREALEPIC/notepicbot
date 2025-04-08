@@ -28,15 +28,25 @@ async def pass_command(interaction: discord.Interaction, modelname: str):
         return
 
     data = files_data[modelname]
+    file_size = data["size"]
+    version = data["version"]
+    for_ = data["for"]
+    last_update = data["last_update"]
     license_type = data["license"]
+    password = data["password"]
     license_desc = license_descriptions.get(license_type, "No description available.")
 
-   info = f"""```[FILE NAME       ] {modelname}
+    # Embed with formatted block content
+    embed = Embed(title=f"Access: {modelname}", color=0x2ecc71)
+
+    info = f"""```[FILE NAME       ] {modelname}
 [FILE SIZE       ] {file_size:<15} [VERSION        ] {version}
 [FOR             ] {for_:<15} [LAST UPDATE    ] {last_update}
 [LICENSE         ] {license_type}
 [LICENSE DETAILS ] {license_desc}
 [PASSWORD        ] {password}```"""
+
+    embed.description = info
 
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
@@ -52,7 +62,7 @@ async def on_ready():
     await tree.sync()
     print(f"✅ Bot ready as {bot.user}")
 
-
+# Flask server (Don't remove)
 from flask import Flask
 from threading import Thread
 
@@ -67,4 +77,5 @@ def run():
 
 Thread(target=run).start()
 
+# Run the bot
 bot.run(os.environ["asmr"])
