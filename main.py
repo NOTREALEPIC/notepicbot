@@ -40,12 +40,12 @@ async def pass_command(interaction: discord.Interaction, modelname: str):
     embed = Embed(title=f"Access: {modelname}", color=0x2ecc71)
 
     info = (
-        f"``FILE NAME`` `{modelname}`\n"
-        f"``FILE SIZE`` `{file_size}`   ``VERSION`` `{version}`\n"
-        f"``FOR`` `{for_}`   ``LAST UPDATE`` `{last_update}`\n"
-        f"``LICENSE`` `{license_type}`\n"
-        f"``LICENSE DETAILS`` `{license_desc}`\n"
-        f"``PASSWORD`` `{password}`"
+        f"``FILE NAME`` ```{modelname}```\n"
+        f"``FILE SIZE`` ```{file_size}```   ``VERSION`` ```{version}```\n"
+        f"``FOR`` `{for_}`   ``LAST UPDATE`` ```{last_update}```\n"
+        f"``LICENSE`` ```{license_type}```\n"
+        f"``LICENSE DETAILS`` ```{license_desc}```\n"
+        f"``PASSWORD`` ```{password}```"
     )
 
     embed.description = info
