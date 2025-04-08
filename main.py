@@ -18,13 +18,13 @@ async def model_autocomplete(interaction: discord.Interaction, current: str):
         for model in files_data if current.lower() in model.lower()
     ][:25]
 
-@tree.command(name="pass", description="Get info & password for a model")
-@app_commands.describe(modelname="Choose a model")
+@tree.command(name="pass", description="Get info & password for Mod file)
+@app_commands.describe(modelname="File")
 @app_commands.autocomplete(modelname=model_autocomplete)
-@app_commands.checks.has_role("Z-Mod")
+@app_commands.checks.has_role("ʟᴇɢɪᴛ")
 async def pass_command(interaction: discord.Interaction, modelname: str):
     if modelname not in files_data:
-        await interaction.response.send_message("❌ Model not found!", ephemeral=True)
+        await interaction.response.send_message(" Model not found!", ephemeral=True)
         return
 
     data = files_data[modelname]
@@ -54,7 +54,7 @@ async def pass_command(interaction: discord.Interaction, modelname: str):
 @pass_command.error
 async def pass_command_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.errors.MissingRole):
-        await interaction.response.send_message("❌ You must verify your account.", ephemeral=True)
+        await interaction.response.send_message("You must have the verify role to use this command.", ephemeral=True)
 
 # Bot ready
 @bot.event
