@@ -1,45 +1,15 @@
-import discord
+from discord import app_commands, Embed
 from discord.ext import commands
-from discord import app_commands
+import discord
 import os
-from flask import Flask
-from threading import Thread
 
-# ✅ Get your token from environment variable
-TOKEN = os.environ["asmr"]
+from files import files_data
+from licence import license_descriptions
 
-# ✅ Discord bot setup
 intents = discord.Intents.default()
-intents.messages = True
 intents.message_content = True
-intents.guilds = True
-intents.members = True
-
 bot = commands.Bot(command_prefix="!", intents=intents)
 tree = bot.tree
-
-
-# ✅ Scam link blocker
-@bot.event
-async def on_message(message):
-    if message.author.bot:
-        return
-
-    scam_keywords = ["free nitro", "nude", ".xyz", "airdrop", "porn"]
-    if any(word in message.content.lower() for word in scam_keywords):
-        try:
-            await message.delete()
-            await message.author.timeout(
-                discord.utils.utcnow() + discord.timedelta(days=30),
-                reason="Scam detected"
-            )
-            await message.channel.send(
-                f"⚠️ {message.author.mention} has been timed out for posting scam links."
-            )
-        except Exception as e:
-            print(f"Error: {e}")
-
-    await bot.process_commands(message)
 
 # Autocomplete list
 async def model_autocomplete(interaction: discord.Interaction, current: str):
@@ -73,38 +43,16 @@ async def pass_command(interaction: discord.Interaction, modelname: str):
 
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
-# ✅ Unauthorized user handling for /pass
+# Error handler
 @pass_command.error
 async def pass_command_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.errors.MissingRole):
-        await interaction.response.send_message(
-            "❌ You must verify your account to use this command.",
-            ephemeral=True
-        )
+        await interaction.response.send_message("❌ You must verify your account.", ephemeral=True)
 
-# ✅ Bot online event
+# Bot ready
 @bot.event
 async def on_ready():
     await tree.sync()
     print(f"✅ Bot ready as {bot.user}")
-    await bot.change_presence(
-        activity=discord.Activity(
-            type=discord.ActivityType.watching,
-            name="the whole server 👁️‍🗨️"
-        )
-    )
 
-# ✅ Keep-alive Flask ping server
-app = Flask('')
-
-@app.route('/')
-def home():
-    return "Bot is running!"
-
-def run():
-    app.run(host='0.0.0.0', port=8080)
-
-Thread(target=run).start()
-
-# ✅ Run the bot
-bot.run(TOKEN)
+bot.run(os.environ["asmr"])
