@@ -13,7 +13,7 @@ files_data = {
         "size": "55MB",
         "version": "beta",
         "for": "3D model",
-        "last_update": "2025-03-21",
+        "last_update": "27-07-2024",
         "license": "Creative License",
         "password": "7685"
     },
