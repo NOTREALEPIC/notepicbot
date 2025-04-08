@@ -20,7 +20,7 @@ files_data = {
     "Toyota_Supra": {
         "size": "28MB",
         "version": "v1.0",
-        "for": "GTA SA``",
+        "for": "GTA SA",
         "last_update": "2025-01-15",
         "license": "Personal Use License",
         "password": "supra123"
