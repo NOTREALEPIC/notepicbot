@@ -37,7 +37,7 @@ async def pass_command(interaction: discord.Interaction, modelname: str):
     license_desc = license_descriptions.get(license_type, "No description available.")
 
     # Embed with formatted block content
-    embed = Embed(title=f"📦 Access: {modelname}", color=0x2ecc71)
+    embed = Embed(title=f" Access: {modelname}", color=0x2ecc71)
 
     embed.add_field(name=":files: FILE NAME", value=f"```{modelname}```", inline=False)
     embed.add_field(name=":size: FILE SIZE", value=f"```{file_size}```", inline=True)
