@@ -42,7 +42,7 @@ async def pass_command(interaction: discord.Interaction, modelname: str):
     info = (
         f"``FILE NAME`` ```{modelname}```\n"
         f"``FILE SIZE`` ```{file_size}```   ``VERSION`` ```{version}```\n"
-        f"``FOR`` `{for_}`   ``LAST UPDATE`` ```{last_update}```\n"
+        f"``FOR`` ```{for_}```   ``LAST UPDATE`` ```{last_update}```\n"
         f"``LICENSE`` ```{license_type}```\n"
         f"``LICENSE DETAILS`` ```{license_desc}```\n"
         f"``PASSWORD`` ```{password}```"
