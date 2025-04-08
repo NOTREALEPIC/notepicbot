@@ -4,7 +4,7 @@ files_data = {
         "version": "```v1.2```",
         "for": "```GTA 5```",
         "last_update": "```2025-04-08```",
-        "license": "```Free-Personal```",
+        "license": "Free-Personal",
         "password": "```bmwpass123```"
     },
     "Lamborghini_Aventador": {
