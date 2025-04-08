@@ -18,7 +18,7 @@ async def model_autocomplete(interaction: discord.Interaction, current: str):
         for model in files_data if current.lower() in model.lower()
     ][:25]
 
-@tree.command(name="pass", description="Get info & password for Mod file)
+@tree.command(name="pass", description="Get info & password for Mod file")
 @app_commands.describe(modelname="File")
 @app_commands.autocomplete(modelname=model_autocomplete)
 @app_commands.checks.has_role("ʟᴇɢɪᴛ")
