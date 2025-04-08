@@ -31,15 +31,15 @@ async def pass_command(interaction: discord.Interaction, modelname: str):
     license_type = data["license"]
     license_desc = license_descriptions.get(license_type, "No description available.")
 
-    embed = Embed(title=f" Access: {modelname}", color=0x2ecc71)
-    embed.add_field(name=" File Name", value=modelname, inline=False)
-    embed.add_field(name=" File Size", value=data["file_size"], inline=True)
-    embed.add_field(name=" Version", value=data["version"], inline=True)
-    embed.add_field(name=" For", value=data["for"], inline=True)
-    embed.add_field(name=" Last Update", value=data["last_update"], inline=True)
-    embed.add_field(name=" License", value=license_type, inline=True)
-    embed.add_field(name=" License Description", value=license_desc, inline=False)
-    embed.add_field(name=" Password", value=f"`{data['password']}`", inline=False)
+    embed = Embed(title=f"Access: {modelname}", color=0x2ecc71)
+    embed.add_field(name="```File Name```", value=modelname, inline=False)
+    embed.add_field(name="```File Size```", value=data["file_size"], inline=True)
+    embed.add_field(name="```Version```", value=data["version"], inline=True)
+    embed.add_field(name="```For```", value=data["for"], inline=True)
+    embed.add_field(name="```Last Update```", value=data["last_update"], inline=True)
+    embed.add_field(name="```License```", value=license_type, inline=True)
+    embed.add_field(name="```License Description```", value=license_desc, inline=False)
+    embed.add_field(name="```Password```", value=data["password"], inline=False)
 
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
