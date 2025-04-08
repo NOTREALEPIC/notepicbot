@@ -55,4 +55,19 @@ async def on_ready():
     await tree.sync()
     print(f"✅ Bot ready as {bot.user}")
 
+
+from flask import Flask
+from threading import Thread
+
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot is running!"
+
+def run():
+    app.run(host='0.0.0.0', port=8080)
+
+Thread(target=run).start()
+
 bot.run(os.environ["asmr"])
