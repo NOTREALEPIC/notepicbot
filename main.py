@@ -1,17 +1,36 @@
+import time
+import os
 from discord import app_commands, Embed
 from discord.ext import commands
 import discord
-import os
+from flask import Flask
+from threading import Thread
 
-from files import files_data
-from licence import license_descriptions
+# Cooldown check to prevent rapid restarts
+def check_restart_limit():
+    path = "last_restart.txt"
+    current_time = time.time()
 
+    if os.path.exists(path):
+        with open(path, "r") as f:
+            last_time = float(f.read().strip())
+        if current_time - last_time < 600:  # 10 minutes
+            print("⛔ Too soon to restart. Exiting to avoid rate-limit.")
+            exit()
+
+    with open(path, "w") as f:
+        f.write(str(current_time))
+    print("✅ Passed cooldown check. Starting bot.")
+
+check_restart_limit()
+
+# Setup Discord bot
 intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 tree = bot.tree
 
-# Autocomplete list
+# Autocomplete list for the pass command
 async def model_autocomplete(interaction: discord.Interaction, current: str):
     return [
         app_commands.Choice(name=model, value=model)
@@ -56,42 +75,19 @@ async def pass_command_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.errors.MissingRole):
         await interaction.response.send_message("You must have the verify role to use this command.", ephemeral=True)
 
-# Bot ready
+# Bot ready event
 @bot.event
 async def on_ready():
-    try:
-        synced = await tree.sync(guild=discord.Object(id=1232208366735196283))
-        print(f"✅ Synced {len(synced)} command(s) to test guild.")
-    except Exception as e:
-        print(f"❌ Failed to sync commands: {e}")
+    await tree.sync()
+    await tree.sync(guild=discord.Object(id=1232208366735196283))  # Add this line with your server ID
     print(f"✅ Bot ready as {bot.user}")
 
-async def on_message(message):
-    if isinstance(message.channel, discord.DMChannel):
-        return  # ignore DMs
-
-
-
-
-
-from discord.ext.commands import cooldown, BucketType
-
-@commands.cooldown(1, 10, BucketType.user)  # 1 use per 10 seconds per user
-@tree.command(...)
-async def pass_command(...):
-    ...
-
-
-
-# Flask server (Don't remove)
-from flask import Flask
-from threading import Thread
-
+# Flask server (keeps the bot alive)
 app = Flask('')
 
 @app.route('/')
 def home():
-    return "Bot is running!"
+    return "Bot is running!", 200
 
 def run():
     app.run(host='0.0.0.0', port=8080)
