@@ -5,6 +5,8 @@ from discord.ext import commands
 import discord
 from flask import Flask
 from threading import Thread
+from files import files_data
+from license import license_descriptions
 
 # Cooldown check to prevent rapid restarts
 def check_restart_limit():
