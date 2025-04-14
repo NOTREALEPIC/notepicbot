@@ -66,6 +66,22 @@ async def on_ready():
         print(f"❌ Failed to sync commands: {e}")
     print(f"✅ Bot ready as {bot.user}")
 
+async def on_message(message):
+    if isinstance(message.channel, discord.DMChannel):
+        return  # ignore DMs
+
+
+
+
+
+from discord.ext.commands import cooldown, BucketType
+
+@commands.cooldown(1, 10, BucketType.user)  # 1 use per 10 seconds per user
+@tree.command(...)
+async def pass_command(...):
+    ...
+
+
 
 # Flask server (Don't remove)
 from flask import Flask
