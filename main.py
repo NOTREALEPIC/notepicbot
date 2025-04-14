@@ -41,6 +41,7 @@ async def model_autocomplete(interaction: discord.Interaction, current: str):
 @app_commands.describe(modelname="File")
 @app_commands.autocomplete(modelname=model_autocomplete)
 @app_commands.checks.has_role("ʟᴇɢɪᴛ")
+@commands.cooldown(1, 10, commands.BucketType.user)
 async def pass_command(interaction: discord.Interaction, modelname: str):
     if modelname not in files_data:
         await interaction.response.send_message(" Model not found!", ephemeral=True)
