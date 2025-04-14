@@ -59,9 +59,13 @@ async def pass_command_error(interaction: discord.Interaction, error):
 # Bot ready
 @bot.event
 async def on_ready():
-    await tree.sync()
-    await tree.sync(guild=discord.Object(id=1232208366735196283))  # Add this line with your server ID
+    try:
+        synced = await tree.sync(guild=discord.Object(id=1232208366735196283))
+        print(f"✅ Synced {len(synced)} command(s) to test guild.")
+    except Exception as e:
+        print(f"❌ Failed to sync commands: {e}")
     print(f"✅ Bot ready as {bot.user}")
+
 
 # Flask server (Don't remove)
 from flask import Flask
