@@ -83,6 +83,7 @@ async def on_ready():
     await tree.sync(guild=discord.Object(id=1232208366735196283))  # Add this line with your server ID
     print(f"✅ Bot ready as {bot.user}")
 
+
 # Flask server (keeps the bot alive)
 app = Flask('')
 
@@ -91,7 +92,9 @@ def home():
     return "Bot is running!", 200
 
 def run():
-    app.run(host='0.0.0.0', port=8080)
+    # Use the port specified by Render (or any platform you're using)
+    port = int(os.environ.get("PORT", 8080))  # Default to 8080 if PORT is not set
+    app.run(host='0.0.0.0', port=port)
 
 Thread(target=run).start()
 
