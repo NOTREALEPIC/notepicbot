@@ -14,7 +14,7 @@ def check_restart_limit():
     if os.path.exists(path):
         with open(path, "r") as f:
             last_time = float(f.read().strip())
-        if current_time - last_time < 600:  # 10 minutes
+        if current_time - last_time < 1200:  # 10 minutes
             print("⛔ Too soon to restart. Exiting to avoid rate-limit.")
             exit()
 
