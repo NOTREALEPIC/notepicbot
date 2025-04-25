@@ -76,7 +76,7 @@ async def pass_command(interaction: discord.Interaction, modelname: str):
 @pass_command.error
 async def pass_command_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.errors.MissingRole):
-        await interaction.response.send_message("You must have the verify role to use this command.", ephemeral=True)
+        await interaction.response.send_message("Access denied. Verify in <#1233843778754838679> to continue.", ephemeral=True)
 
 # Bot ready event
 @bot.event
