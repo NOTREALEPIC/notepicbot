@@ -42,7 +42,7 @@ async def model_autocomplete(interaction: discord.Interaction, current: str):
 @tree.command(name="pass", description="Get info & password for Mod file",guild=discord.Object(id=1232208366735196283))
 @app_commands.describe(modelname="File")
 @app_commands.autocomplete(modelname=model_autocomplete)
-@app_commands.checks.has_role("ʟᴇɢɪᴛ")
+@app_commands.checks.has_role("LEGIT")
 @commands.cooldown(1, 10, commands.BucketType.user)
 async def pass_command(interaction: discord.Interaction, modelname: str):
     if modelname not in files_data:
