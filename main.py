@@ -106,7 +106,7 @@ async def pass_command_error(interaction: discord.Interaction, error):
 @app_commands.checks.has_role("ROOT")
 @commands.cooldown(1, 10, commands.BucketType.user)
 async def code(interaction: discord.Interaction):
-    await interaction.response.defer()
+    await interaction.response.defer(thinking=True)
     while True:
         new_code = generate_code()
         if not check_code_exists(new_code):
