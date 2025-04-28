@@ -142,34 +142,37 @@ async def code_autocomplete(interaction: discord.Interaction, current: str):
 @tree.command(name="paid_id", description="customer",guild=discord.Object(id=1232208366735196283))
 @app_commands.default_permissions(administrator=True)
 @app_commands.checks.has_role("ROOT")
-@app_commands.autocomplete(code=code_autocomplete)
 @app_commands.describe(code="Enter the customer's code")
+@app_commands.autocomplete(code=code_autocomplete)
 @commands.cooldown(1, 10, commands.BucketType.user)
 async def paid_id(interaction: discord.Interaction, code: str):
-    await interaction.response.defer(thinking=True)
-    if code not in paid_id_data:
-        await interaction.edit_original_response(content="code not found")
-        return
-
-    data = paid_id_data[code]
-    Discord_id = data["Discord_id"]
-    File_Name = data["File_Name"]
-    For_ = data["For"]
-    Date = data["Date"]
-    Via = data["Via"]
-
-    # Embed with formatted block content
-    embed = Embed(title=f" Access: {code}", color=0x2ecc71)
-
-    embed.add_field(name="```|``` DISCORD ID", value=f"```{Discord_id}```", inline=False)
-    embed.add_field(name="```|``` FILE NAME", value=f"```{File_Name}```", inline=False)
-    embed.add_field(name="```|``` FOR", value=f"```{For_}```", inline=True)
-    embed.add_field(name="```|``` DATE", value=f"```{Date}```", inline=True)
-    embed.add_field(name="```|``` PAYMENT VIA", value=f"```{Via}```", inline=True)
-
+    try:
+        await interaction.response.defer(thinking=True)
+        if code not in paid_id_data:
+            await interaction.edit_original_response(content="code not found")
+            return
     
-
-    await interaction.edit_original_response(embed=embed)
+        data = paid_id_data[code]
+        Discord_id = data["Discord_id"]
+        File_Name = data["File_Name"]
+        For_ = data["For"]
+        Date = data["Date"]
+        Via = data["Via"]
+    
+        # Embed with formatted block content
+        embed = Embed(title=f" Access: {code}", color=0x2ecc71)
+    
+        embed.add_field(name="```|``` DISCORD ID", value=f"```{Discord_id}```", inline=False)
+        embed.add_field(name="```|``` FILE NAME", value=f"```{File_Name}```", inline=False)
+        embed.add_field(name="```|``` FOR", value=f"```{For_}```", inline=True)
+        embed.add_field(name="```|``` DATE", value=f"```{Date}```", inline=True)
+        embed.add_field(name="```|``` PAYMENT VIA", value=f"```{Via}```", inline=True)
+    
+        
+    
+        await interaction.edit_original_response(embed=embed)
+    except Exception as e:
+        await interaction.edit_original_response(content=f"Error: {e}")
 
 # Error handler
 @paid_id.error
