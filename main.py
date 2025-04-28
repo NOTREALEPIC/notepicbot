@@ -99,8 +99,8 @@ async def pass_command_error(interaction: discord.Interaction, error):
         await interaction.response.send_message("Access denied. Verify in <#1233843778754838679> to continue.", ephemeral=True)
 
 
-# Autocomplete list for the pass command
-@tree.command(name="code", description="genarate code ",guild=discord.Object(id=1232208366735196283))
+#################-------CODE-CMD--------#################
+@tree.command(name="code", description="genarate code ",guild=discord.Object(id=1232208366735196283),default_permissions=discord.Permissions(administrator=True))
 @app_commands.checks.has_role("ROOT")
 @commands.cooldown(1, 10, commands.BucketType.user)
 async def code(interaction: discord.Interaction):
@@ -129,6 +129,47 @@ async def code_error(interaction: discord.Interaction, error):
         await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
     else:
         await interaction.response.send_message(f"An error occurred: {str(error)}", ephemeral=True)
+
+#################-------CODE-CMD--------#################
+@tree.command(name="paid_id", description="customer",guild=discord.Object(id=1232208366735196283),default_permissions=discord.Permissions(administrator=True))
+@app_commands.describe(modelname="File")
+@app_commands.autocomplete(modelname=model_autocomplete)
+@app_commands.checks.has_role("ROOT")
+@commands.cooldown(1, 10, commands.BucketType.user)
+async def pass_command(interaction: discord.Interaction, modelname: str):
+    if modelname not in files_data:
+        await interaction.response.send_message(" Model not found!", ephemeral=True)
+        return
+
+    data = files_data[modelname]
+    file_size = data["size"]
+    version = data["version"]
+    for_ = data["for"]
+    last_update = data["last_update"]
+    license_type = data["license"]
+    password = data["password"]
+    license_desc = license_descriptions.get(license_type, "No description available.")
+
+    # Embed with formatted block content
+    embed = Embed(title=f" Access: {modelname}", color=0x2ecc71)
+
+    embed.add_field(name="```|``` FILE NAME", value=f"```{modelname}```", inline=False)
+    embed.add_field(name="```|``` FILE SIZE", value=f"```{file_size}```", inline=True)
+    embed.add_field(name="```|``` VERSION", value=f"```{version}```", inline=True)
+    embed.add_field(name="```|``` FOR", value=f"```{for_}```", inline=True)
+    embed.add_field(name="```|``` LAST UPDATE", value=f"```{last_update}```", inline=True)
+    embed.add_field(name="```|``` LICENSE", value=f"```{license_type}```", inline=True)
+    embed.add_field(name="```|``` LICENSE DETAILS", value=f"```{license_desc}```", inline=False)
+    embed.add_field(name="```|``` PASSWORD", value=f"```{password}```", inline=False)
+
+    await interaction.response.send_message(embed=embed, ephemeral=True)
+
+# Error handler
+@pass_command.error
+async def pass_command_error(interaction: discord.Interaction, error):
+    if isinstance(error, app_commands.errors.MissingRole):
+        await interaction.response.send_message("Access denied. Verify in <#1233843778754838679> to continue.", ephemeral=True)
+
 
 # Bot ready event
 @bot.event
