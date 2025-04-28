@@ -97,7 +97,7 @@ async def pass_command_error(interaction: discord.Interaction, error):
 
 
 # Autocomplete list for the pass command
-@tree.command(name="code", description="genarate code ")
+@tree.command(name="code", description="genarate code ",guild=discord.Object(id=1232208366735196283))
 @app_commands.checks.has_role("ROOT")
 @commands.cooldown(1, 10, commands.BucketType.user)
 async def code(ctx):
@@ -118,6 +118,8 @@ async def code(ctx):
 async def code_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.errors.MissingRole):
         await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
+    else:
+        await interaction.response.send_message(f"An error occurred: {str(error)}", ephemeral=True)
 
 # Bot ready event
 @bot.event
