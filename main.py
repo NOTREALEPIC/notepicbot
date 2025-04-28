@@ -34,8 +34,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 tree = bot.tree
 
-
-# Command to generate a random code
+# Function to generate random 8-character alphanumeric code
 def generate_code():
     characters = string.ascii_letters + string.digits  # A-Z, a-z, 0-9
     return ''.join(random.choices(characters, k=8))
@@ -135,7 +134,6 @@ async def pass_command(interaction: discord.Interaction, modelname: str):
     embed.add_field(name="| LICENSE", value=f"{license_type}", inline=True)
     embed.add_field(name="| LICENSE DETAILS", value=f"{license_desc}", inline=False)
     embed.add_field(name="| PASSWORD", value=f"{password}", inline=False)
-
 
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
