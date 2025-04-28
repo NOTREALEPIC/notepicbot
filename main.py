@@ -37,6 +37,7 @@ def generate_code():
 def check_code_exists(code):
     if os.path.exists("generated_codes.txt"):
         with open("generated_codes.txt", "r") as file:
+            pass
             codes = file.readlines()
             codes = [line.strip() for line in codes]
             return code in codes
@@ -109,8 +110,8 @@ async def code(ctx):
     # Save the generated code to the file
     with open("generated_codes.txt", "a") as file:
         file.write(f"{new_code}\n")
-    
-    await ctx.send(f"Generated Code: {new_code}")
+    print(f"Code generated and saved: {new_code}")
+    await interaction.response.send_message(f"Generated Code: {new_code}")
 
 
 # Error handler
