@@ -9,6 +9,7 @@ from files import files_data
 from licence import license_descriptions
 import random
 import string
+import json
 
 # Cooldown check to prevent rapid restarts
 def check_restart_limit():
@@ -34,12 +35,27 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 tree = bot.tree
 
+# Path to the user data file
+USER_DATA_FILE = "user_data.json"
+
+# Function to load the data from the JSON file
+def load_data():
+    if os.path.exists(USER_DATA_FILE):
+        with open(USER_DATA_FILE, "r") as file:
+            return json.load(file)
+    return {}
+
+# Function to save data to the JSON file
+def save_data(data):
+    with open(USER_DATA_FILE, "w") as file:
+        json.dump(data, file, indent=4)
+
 # Function to generate random 8-character alphanumeric code
 def generate_code():
     characters = string.ascii_letters + string.digits  # A-Z, a-z, 0-9
     return ''.join(random.choices(characters, k=8))
 
-# Define the command
+# Define the /code command
 @bot.command()
 async def code(ctx):
     # Check if the user has the required role
@@ -54,6 +70,40 @@ async def code(ctx):
         # User doesn't have the required role
         await ctx.send('You do not have permission to use this command.')
 
+# Define the /paid_id command to save user data
+@bot.command()
+async def paid_id(ctx, discord_id: str, file: str, date: str, code: str):
+    # Load existing data
+    data = load_data()
+
+    # Save the new user data
+    user_data = {
+        "DISCORD ID": discord_id,
+        "FILE": file,
+        "DATE": date,
+        "CODE": code
+    }
+
+    # Store it using discord ID as the key
+    data[discord_id] = user_data
+
+    # Save the updated data back to the file
+    save_data(data)
+
+    await ctx.send(f"Data for {discord_id} has been saved successfully.")
+
+# Define the /get_data command to retrieve saved user data
+@bot.command()
+async def get_data(ctx, discord_id: str):
+    # Load existing data
+    data = load_data()
+
+    # Check if data for the user exists
+    if discord_id in data:
+        user_data = data[discord_id]
+        await ctx.send(f"Data for {discord_id}: {user_data}")
+    else:
+        await ctx.send(f"No data found for {discord_id}.")
 
 # Autocomplete list for the pass command
 async def model_autocomplete(interaction: discord.Interaction, current: str):
