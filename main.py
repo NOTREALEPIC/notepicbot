@@ -1,5 +1,7 @@
 import time
 import os
+import random
+import string
 from discord import app_commands, Embed
 from discord.ext import commands
 import discord
