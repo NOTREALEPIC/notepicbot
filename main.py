@@ -101,12 +101,17 @@ async def pass_command_error(interaction: discord.Interaction, error):
 @tree.command(name="code", description="genarate code ",guild=discord.Object(id=1232208366735196283))
 @app_commands.checks.has_role("ROOT")
 @commands.cooldown(1, 10, commands.BucketType.user)
-async def code(ctx):
+async def code(interaction: discord.Interaction):
     while True:
         new_code = generate_code()
         if not check_code_exists(new_code):
             break
     
+    # Ensure the file exists and create it if necessary
+    if not os.path.exists("generated_codes.txt"):
+        with open("generated_codes.txt", "w") as file:
+            pass  # Create the file if it doesn't exist
+            
     # Save the generated code to the file
     with open("generated_codes.txt", "a") as file:
         file.write(f"{new_code}\n")
