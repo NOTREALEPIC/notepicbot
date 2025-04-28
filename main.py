@@ -101,7 +101,8 @@ async def pass_command_error(interaction: discord.Interaction, error):
 
 
 #################-------CODE-CMD--------#################
-@tree.command(name="code", description="genarate code ",guild=discord.Object(id=1232208366735196283),default_permissions=discord.Permissions(administrator=True))
+@tree.command(name="code", description="genarate code ",guild=discord.Object(id=1232208366735196283))
+@app_commands.default_permissions(administrator=True)
 @app_commands.checks.has_role("ROOT")
 @commands.cooldown(1, 10, commands.BucketType.user)
 async def code(interaction: discord.Interaction):
@@ -132,7 +133,8 @@ async def code_error(interaction: discord.Interaction, error):
         await interaction.response.send_message(f"An error occurred: {str(error)}", ephemeral=True)
 
 #################-------PAID-ID-CMD--------#################
-@tree.command(name="paid_id", description="customer",guild=discord.Object(id=1232208366735196283),default_permissions=discord.Permissions(administrator=True))
+@tree.command(name="paid_id", description="customer",guild=discord.Object(id=1232208366735196283))
+@app_commands.default_permissions(administrator=True)
 @app_commands.checks.has_role("ROOT")
 @app_commands.describe(code="Enter the customer's code")
 @commands.cooldown(1, 10, commands.BucketType.user)
