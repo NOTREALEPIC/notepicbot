@@ -155,7 +155,7 @@ async def paid_id(interaction: discord.Interaction, code: str):
         data = paid_id_data[code]
         Discord_id = data["Discord_id"]
         File_Name = data["File_Name"]
-        For_ = data["For"]
+        For_ = data["For_"]
         Date = data["Date"]
         Via = data["Via"]
     
