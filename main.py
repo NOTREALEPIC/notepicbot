@@ -7,6 +7,8 @@ from flask import Flask
 from threading import Thread
 from files import files_data
 from licence import license_descriptions
+import random
+import string
 
 # Cooldown check to prevent rapid restarts
 def check_restart_limit():
@@ -31,6 +33,27 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 tree = bot.tree
+
+# Function to generate random 8-character alphanumeric code
+def generate_code():
+    characters = string.ascii_letters + string.digits  # A-Z, a-z, 0-9
+    return ''.join(random.choices(characters, k=8))
+
+# Define the command
+@bot.command()
+async def code(ctx):
+    # Check if the user has the required role
+    required_role = "YourRoleName"  # Replace with the role name you want to check
+
+    # Check if user has the role
+    if any(role.name == required_role for role in ctx.author.roles):
+        # Generate the code
+        code = generate_code()
+        await ctx.send(f'Your generated code is: **{code}**')
+    else:
+        # User doesn't have the required role
+        await ctx.send('You do not have permission to use this command.')
+
 
 # Autocomplete list for the pass command
 async def model_autocomplete(interaction: discord.Interaction, current: str):
