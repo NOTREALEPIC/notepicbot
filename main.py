@@ -43,7 +43,7 @@ def generate_code():
 @bot.command()
 async def code(ctx):
     # Check if the user has the required role
-    required_role = "YourRoleName"  # Replace with the role name you want to check
+    required_role = "ROOT"  # Replace with the role name you want to check
 
     # Check if user has the role
     if any(role.name == required_role for role in ctx.author.roles):
