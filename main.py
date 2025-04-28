@@ -114,7 +114,7 @@ async def code(ctx):
 
 
 # Error handler
-@pass_command.error
+@code.error
 async def code_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.errors.MissingRole):
         await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
