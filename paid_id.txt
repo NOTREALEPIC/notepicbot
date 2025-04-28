@@ -1,20 +1,18 @@
 
 paid_id_data = {
     "epic0000": {
-        "size": "17MB",
-        "version": "beta",
-        "for": "GTA 5",
-        "last_update": "20-07-2024",
-        "license": "Personal Use License",
-        "password": "7612"
+        "Discord id": "42424242424",
+        "File Name": "beta",
+        "For": "GTA 5",
+        "Date": "20-07-2024",
+        "Via": "Personal Use License"
     },
     "epic0001": {
-        "size": "55MB",
-        "version": "beta",
-        "for": "3D model",
-        "last_update": "27-07-2024",
-        "license": "Creative License",
-        "password": "7685"
+        "Discord id": "42424242424",
+        "File Name": "beta",
+        "For": "GTA 5",
+        "Date": "20-07-2024",
+        "Via": "Personal Use License"
     },
     
 }
