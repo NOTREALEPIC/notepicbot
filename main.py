@@ -170,7 +170,7 @@ async def paid_id(interaction: discord.Interaction, code: str):
     
         
     
-        await interaction.edit_original_response(embed=embed)
+        await interaction.edit_original_response(embed=embed, ephemeral=True)
     except Exception as e:
         await interaction.edit_original_response(content=f"Error: {e}")
 
