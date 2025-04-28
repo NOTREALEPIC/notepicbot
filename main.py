@@ -133,9 +133,16 @@ async def code_error(interaction: discord.Interaction, error):
         await interaction.response.send_message(f"An error occurred: {str(error)}", ephemeral=True)
 
 #################-------PAID-ID-CMD--------#################
+async def code_autocomplete(interaction: discord.Interaction, current: str):
+    return [
+        app_commands.Choice(name=code, value=code)
+        for code in paid_id_data if current.lower() in code.lower()
+    ][:25]
+
 @tree.command(name="paid_id", description="customer",guild=discord.Object(id=1232208366735196283))
 @app_commands.default_permissions(administrator=True)
 @app_commands.checks.has_role("ROOT")
+@app_commands.autocomplete(code=code_autocomplete)
 @app_commands.describe(code="Enter the customer's code")
 @commands.cooldown(1, 10, commands.BucketType.user)
 async def paid_id(interaction: discord.Interaction, code: str):
@@ -166,7 +173,7 @@ async def paid_id(interaction: discord.Interaction, code: str):
 
 # Error handler
 @paid_id.error
-async def pass_command_error(interaction: discord.Interaction, error):
+async def paid_id_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.errors.MissingRole):
         await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
 
