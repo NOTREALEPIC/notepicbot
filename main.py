@@ -39,8 +39,10 @@ def init_db():
 
 # Function to generate a unique 8-character alphanumeric code
 def generate_code():
-    characters = string.ascii_letters + string.digits  # A-Z, a-z, 0-9
-    return ''.join(random.choices(characters, k=8))
+    # Generate a random number between 1 and 9999
+    random_number = random.randint(1, 9999)
+    # Return the formatted code with leading zeros
+    return f"epic{random_number:04d}"  # 4 digits, padded with leading zeros
 
 # Check if the generated code already exists in the file
 def check_code_exists(code):
