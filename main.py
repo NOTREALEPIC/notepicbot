@@ -26,6 +26,21 @@ def check_restart_limit():
 
 check_restart_limit()
 
+# Function to generate a unique 8-character alphanumeric code
+def generate_code():
+    characters = string.ascii_letters + string.digits  # A-Z, a-z, 0-9
+    return ''.join(random.choices(characters, k=8))
+
+# Check if the generated code already exists in the file
+def check_code_exists(code):
+    if os.path.exists("generated_codes.txt"):
+        with open("generated_codes.txt", "r") as file:
+            codes = file.readlines()
+            codes = [line.strip() for line in codes]
+            return code in codes
+    return False
+
+
 # Setup Discord bot
 intents = discord.Intents.default()
 intents.message_content = True
@@ -77,6 +92,30 @@ async def pass_command(interaction: discord.Interaction, modelname: str):
 async def pass_command_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.errors.MissingRole):
         await interaction.response.send_message("Access denied. Verify in <#1233843778754838679> to continue.", ephemeral=True)
+
+
+# Autocomplete list for the pass command
+@tree.command(name="code", description="genarate code ")
+@app_commands.checks.has_role("ROOT")
+@commands.cooldown(1, 10, commands.BucketType.user)
+async def code(ctx):
+    while True:
+        new_code = generate_code()
+        if not check_code_exists(new_code):
+            break
+    
+    # Save the generated code to the file
+    with open("generated_codes.txt", "a") as file:
+        file.write(f"{new_code}\n")
+    
+    await ctx.send(f"Generated Code: {new_code}")
+
+
+# Error handler
+@pass_command.error
+async def code_error(interaction: discord.Interaction, error):
+    if isinstance(error, app_commands.errors.MissingRole):
+        await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
 
 # Bot ready event
 @bot.event
