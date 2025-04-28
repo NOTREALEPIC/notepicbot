@@ -32,45 +32,57 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 tree = bot.tree
 
-# Command to generate a unique code
+# Function to generate a random code
 def generate_code():
     characters = string.ascii_letters + string.digits  # A-Z, a-z, 0-9
     return ''.join(random.choices(characters, k=8))
 
-# /code command to generate unique code
+# Function to check if the code already exists
+def check_code_exists(code):
+    if os.path.exists("generated_codes.txt"):
+        with open("generated_codes.txt", "r") as file:
+            codes = file.readlines()
+            codes = [line.strip() for line in codes]
+            return code in codes
+    return False
+
+# Command to generate a unique code
 @bot.command()
 async def code(ctx):
-    # Check if the user has the required role (Replace 'ROOT' with your actual role name)
-    required_role = "ROOT"
-    if not any(role.name == required_role for role in ctx.author.roles):
-        await ctx.send("You do not have permission to use this command.")
-        return
+    # Generate a new unique code
+    while True:
+        new_code = generate_code()
+        if not check_code_exists(new_code):
+            break
+    
+    # Save the code to the file to track it
+    with open("generated_codes.txt", "a") as file:
+        file.write(f"{new_code}\n")
 
-    # Generate and send the unique code
-    new_code = generate_code()
+    # Send the generated code to the user
     await ctx.send(f"Generated Code: {new_code}")
 
-# /paid_id command to input and save data
+# Command to add details to paid_id.txt
 @bot.command()
 async def paid_id(ctx):
-    # Check if the user has the required role
+    # Check if the user has the ROOT role
     required_role = "ROOT"
     if not any(role.name == required_role for role in ctx.author.roles):
         await ctx.send("You do not have permission to use this command.")
         return
 
-    # Ask for the details
+    # Ask for details
     await ctx.send("Please enter the Discord ID:")
-    discord_id_msg = await bot.wait_for('message', check=lambda m: m.author == ctx.author)
-    discord_id = discord_id_msg.content.strip()
+    discord_id = await bot.wait_for('message', check=lambda m: m.author == ctx.author)
+    discord_id = discord_id.content.strip()
 
     await ctx.send("Please enter the file name:")
-    file_name_msg = await bot.wait_for('message', check=lambda m: m.author == ctx.author)
-    file_name = file_name_msg.content.strip()
+    file_name = await bot.wait_for('message', check=lambda m: m.author == ctx.author)
+    file_name = file_name.content.strip()
 
     await ctx.send("Please enter the code:")
-    code_msg = await bot.wait_for('message', check=lambda m: m.author == ctx.author)
-    code = code_msg.content.strip()
+    code = await bot.wait_for('message', check=lambda m: m.author == ctx.author)
+    code = code.content.strip()
 
     # Get current date and time
     current_date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
@@ -81,15 +93,9 @@ async def paid_id(ctx):
 
     await ctx.send(f"Data saved successfully for CODE: {code}.")
 
-# /get_code_d command to get details related to a code
+# Command to get details for a specific code
 @bot.command()
 async def get_code_d(ctx, code: str):
-    # Check if the user has the required role
-    required_role = "ROOT"
-    if not any(role.name == required_role for role in ctx.author.roles):
-        await ctx.send("You do not have permission to use this command.")
-        return
-
     # Read the paid_id.txt file to find the details for the code
     found = False
     with open("paid_id.txt", "r") as file:
@@ -113,11 +119,16 @@ async def get_code_d(ctx, code: str):
     if not found:
         await ctx.send("Code not found.")
 
+# Error handling for permission-based commands
+@paid_id.error
+async def paid_id_error(ctx, error):
+    if isinstance(error, commands.MissingRole):
+        await ctx.send("You don't have the required role to use this command.")
+
 # Bot ready event
 @bot.event
 async def on_ready():
     await tree.sync()
-    await tree.sync(guild=discord.Object(id=1232208366735196283))  # Add this line with your server ID
     print(f"✅ Bot ready as {bot.user}")
 
 # Flask server (keeps the bot alive)
@@ -128,7 +139,6 @@ def home():
     return "Bot is running!", 200
 
 def run():
-    # Use the port specified by Render (or any platform you're using)
     port = int(os.environ.get("PORT", 8080))  # Default to 8080 if PORT is not set
     app.run(host='0.0.0.0', port=port)
 
