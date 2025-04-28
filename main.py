@@ -139,8 +139,9 @@ async def code_error(interaction: discord.Interaction, error):
 @app_commands.describe(code="Enter the customer's code")
 @commands.cooldown(1, 10, commands.BucketType.user)
 async def paid_id(interaction: discord.Interaction, code: str):
+    await interaction.response.defer(thinking=True)
     if code not in paid_id_data:
-        await interaction.response.send_message("code not found", ephemeral=True)
+        await interaction.edit_original_response(content="code not found")
         return
 
     data = paid_id_data[code]
@@ -161,7 +162,7 @@ async def paid_id(interaction: discord.Interaction, code: str):
 
     
 
-    await interaction.response.send_message(embed=embed, ephemeral=True)
+    await interaction.edit_original_response(embed=embed)
 
 # Error handler
 @paid_id.error
