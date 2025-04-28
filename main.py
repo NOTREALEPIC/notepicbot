@@ -5,6 +5,7 @@ import string
 from discord import app_commands, Embed
 from discord.ext import commands
 import discord
+import sqlite3
 from flask import Flask
 from threading import Thread
 from files import files_data
@@ -28,6 +29,14 @@ def check_restart_limit():
 
 check_restart_limit()
 
+
+def init_db():
+    conn = sqlite3.connect('codes.db')  # Create or connect to the 'codes.db' file
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS codes (code TEXT)''')  # Create a table 'codes' if it doesn't exist
+    conn.commit()  # Save the changes
+    conn.close()  # Close the connection
+
 # Function to generate a unique 8-character alphanumeric code
 def generate_code():
     characters = string.ascii_letters + string.digits  # A-Z, a-z, 0-9
@@ -35,13 +44,19 @@ def generate_code():
 
 # Check if the generated code already exists in the file
 def check_code_exists(code):
-    if os.path.exists("generated_codes.txt"):
-        with open("generated_codes.txt", "r") as file:
-            pass
-            codes = file.readlines()
-            codes = [line.strip() for line in codes]
-            return code in codes
-    return False
+    conn = sqlite3.connect('codes.db')  # Connect to the database
+    c = conn.cursor()
+    c.execute("SELECT 1 FROM codes WHERE code = ?", (code,))  # Search for the code in the database
+    exists = c.fetchone() is not None  # If code exists, return True, else False
+    conn.close()  # Close the connection
+    return exists
+
+def save_code_to_db(code):
+    conn = sqlite3.connect('codes.db')  # Connect to the database
+    c = conn.cursor()
+    c.execute("INSERT INTO codes (code) VALUES (?)", (code,))  # Insert the code into the database
+    conn.commit()  # Save the changes
+    conn.close()  # Close the connection
 
 
 # Setup Discord bot
@@ -108,13 +123,7 @@ async def code(interaction: discord.Interaction):
             break
     
     # Ensure the file exists and create it if necessary
-    if not os.path.exists("generated_codes.txt"):
-        with open("generated_codes.txt", "w") as file:
-            pass  # Create the file if it doesn't exist
-            
-    # Save the generated code to the file
-    with open("generated_codes.txt", "a") as file:
-        file.write(f"{new_code}\n")
+    save_code_to_db(new_code)
     print(f"Code generated and saved: {new_code}")
     await interaction.response.send_message(f"Generated Code: {new_code}")
 
