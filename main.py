@@ -104,6 +104,7 @@ async def pass_command_error(interaction: discord.Interaction, error):
 @app_commands.checks.has_role("ROOT")
 @commands.cooldown(1, 10, commands.BucketType.user)
 async def code(interaction: discord.Interaction):
+    await interaction.response.defer()
     while True:
         new_code = generate_code()
         if not check_code_exists(new_code):
@@ -118,7 +119,7 @@ async def code(interaction: discord.Interaction):
     with open("generated_codes.txt", "a") as file:
         file.write(f"{new_code}\n")
     print(f"Code generated and saved: {new_code}")
-    await interaction.response.send_message(f"Generated Code: {new_code}")
+    await interaction.followup.send(f"Generated Code: {new_code}") 
 
 
 # Error handler
