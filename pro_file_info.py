@@ -52,7 +52,9 @@ pro_file_info = {
 
 
  <a:epicsmile:1234023404986830878>  **PREVIEW**
-
+https://youtu.be/DGynsgRObZk
+https://youtu.be/_Xn8MrkOa5c
+https://youtu.be/IhS12YicXiQ
 https://media.discordapp.net/attachments/1233831270866227271/1369455997848125540/MC-PRO_PREVIEW_5.png?ex=681c9589&is=681b4409&hm=d887fa828109336e5546b516e330f60a96392309669ab1fc6215f22d4f05211a&=&format=webp&quality=lossless&width=1461&height=822
 https://media.discordapp.net/attachments/1233831270866227271/1369455996509884436/MC-PRO_PREVIEW_2.jpg?ex=681c9588&is=681b4408&hm=374d0362941897fbca00f5fbb13875c017f733da9670105889a161a211a37e1a&=&format=webp&width=1461&height=822
 https://media.discordapp.net/attachments/1233831270866227271/1369456000540737607/MC-PRO_PREVIEW_9.png?ex=681c9589&is=681b4409&hm=e3f0ec87ee91e9c5ca4adbb330d903dd633044858ffee6c7f92411ebfad6cf44&=&format=webp&quality=lossless&width=1461&height=822
