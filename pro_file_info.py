@@ -1,6 +1,6 @@
 pro_file_info = {
     "Lightning_McQueen_Cars_3_EPIC_Edition": {
-        "INFO": """  ## <a:lightning:1369441281264189601> **Lightning McQueen – Cars 3 EPIC Edition**
+        "FIRST": """  ## <a:lightning:1369441281264189601> **Lightning McQueen – Cars 3 EPIC Edition**
 
                 > <a:epicapproved:1369452022004191304> *High-Quality GTA V Mod Inspired by Disney-Pixar’s Cars 3*
                 > <a:epicapproved:1369452022004191304> *Movie-accurate 3D model built with premium textures and clean details*
