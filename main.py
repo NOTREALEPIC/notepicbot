@@ -185,7 +185,8 @@ async def paid_id_error(interaction: discord.Interaction, error):
 @bot.event
 async def on_ready():
     await tree.sync()
-    await tree.sync(guild=discord.Object(id=1232208366735196283))  # Add this line with your server ID
+    await tree.sync(guild=discord.Object(id=1232208366735196283)) 
+    await tree.sync(guild=discord.Object(id=1358758393300648126)) # Add this line with your server ID
     print(f"✅ Bot ready as {bot.user}")
 
 
