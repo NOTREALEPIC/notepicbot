@@ -183,12 +183,48 @@ async def paid_id_error(interaction: discord.Interaction, error):
 
 #################-------TEST-CMD--------#################
 
-@tree.command(
-    name="test",
-    description="A simple test command",
-)
-async def test_command(interaction: discord.Interaction):
-    await interaction.response.send_message(" <a:size:1359124194130001931> hey  ")
+#---@tree.command(
+#---    name="test",
+#---    description="A simple test command",
+#---)
+#---async def test_command(interaction: discord.Interaction):
+#---    await interaction.response.send_message(" <a:size:1359124194130001931> hey  ")
+
+
+
+#################-------pro-file-info-CMD--------#################
+async def fid_autocomplete(interaction: discord.Interaction, current: str):
+    return [
+        app_commands.Choice(name=fid, value=fid)
+        for fid in pro_file_info if current.lower() in fid.lower()
+    ][:25]
+
+@tree.command(name="proinfo", description="Get info about paid files",guild=discord.Object(id=1232208366735196283))
+@app_commands.checks.has_role("ROOT")
+@app_commands.describe(code="Enter the file or select from the list.")
+@app_commands.autocomplete(fid=fid_autocomplete)
+@commands.cooldown(1, 10, commands.BucketType.user)
+async def proinfo(interaction: discord.Interaction, fid: str):
+    try:
+        await interaction.response.defer(thinking=True)
+        if fid not in pro_file_info:
+            await interaction.edit_original_response(content="No file named this. Please check the spelling.")
+            return
+    
+        data = pro_file_info[fid]
+        INFO = data["INFO"]
+
+        await interaction.edit_original_response(content=f" {INFO}")
+    except Exception as e:
+        await interaction.edit_original_response(content=f"Error: {e}")
+
+# Error handler
+@proinfo.error
+async def proinfo_error(interaction: discord.Interaction, error):
+    if isinstance(error, app_commands.errors.MissingRole):
+        await interaction.response.send_message(" <a:epic_skull:1369682573726453841> You do not have permission to use this command.", ephemeral=True)
+
+
 
 # Bot ready event
 @bot.event
