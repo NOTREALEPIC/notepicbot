@@ -217,7 +217,7 @@ async def proinfo(interaction: discord.Interaction, fid: str):
         LEAK = data["LEAK"]
 
         await interaction.edit_original_response(content=f" {INFO}")
-        await interaction.edit_original_response(content=f" {LEAK}")
+        await interaction.followup.send(content=f"{LEAK}")
     except Exception as e:
         await interaction.edit_original_response(content=f"Error: {e}")
 
