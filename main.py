@@ -181,6 +181,15 @@ async def paid_id_error(interaction: discord.Interaction, error):
         await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
 
 
+#################-------TEST-CMD--------#################
+
+@tree.command(
+    name="test",
+    description="A simple test command",
+)
+async def test_command(interaction: discord.Interaction):
+    await interaction.response.send_message(" <a:size:1359124194130001931> hey  ")
+
 # Bot ready event
 @bot.event
 async def on_ready():
