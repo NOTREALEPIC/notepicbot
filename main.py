@@ -200,7 +200,7 @@ async def fid_autocomplete(interaction: discord.Interaction, current: str):
         for fid in pro_file_info if current.lower() in fid.lower()
     ][:25]
 
-@tree.command(name="proinfo", description="Get info about paid files", guild=discord.Object(id=1232208366735196283))
+@tree.command(name="proinfo", description="Get info about paid files",guild=discord.Object(id=1232208366735196283))
 @app_commands.checks.has_role("ROOT")
 @app_commands.describe(fid="Enter the file or select from the list.")
 @app_commands.autocomplete(fid=fid_autocomplete)
@@ -208,23 +208,22 @@ async def fid_autocomplete(interaction: discord.Interaction, current: str):
 async def proinfo(interaction: discord.Interaction, fid: str):
     try:
         await interaction.response.defer(thinking=True)
-
         if fid not in pro_file_info:
             await interaction.edit_original_response(content="No file named this. Please check the spelling.")
             return
+    
+        data = pro_file_info[fid]
+        FIRST = data["FIRST"]
+        SEC = data["SEC"]
+        THIRD = data["THIRD"]
+        FOUR = data["FOUR"]
+        FIVE = data["FIVE"]
 
-        full_text = pro_file_info[fid]["INFO"]
-
-        # Split into 2000-character chunks
-        chunks = [full_text[i:i+2000] for i in range(0, len(full_text), 2000)]
-
-        # Send the first part by editing the original response
-        await interaction.edit_original_response(content=chunks[0])
-
-        # Send the rest as followups
-        for chunk in chunks[1:]:
-            await interaction.followup.send(content=chunk)
-
+        await interaction.edit_original_response(content=f" {FIRST}")
+        await interaction.followup.send(content=SEC, allowed_mentions=discord.AllowedMentions.none())
+        await interaction.followup.send(content=THIRD, allowed_mentions=discord.AllowedMentions.none())
+        await interaction.followup.send(content=FOUR, allowed_mentions=discord.AllowedMentions.none())
+        await interaction.followup.send(content=FIVE, allowed_mentions=discord.AllowedMentions.none())
     except Exception as e:
         await interaction.edit_original_response(content=f"Error: {e}")
 
@@ -232,10 +231,7 @@ async def proinfo(interaction: discord.Interaction, fid: str):
 @proinfo.error
 async def proinfo_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.errors.MissingRole):
-        await interaction.response.send_message(
-            "<a:epic_skull:1369682573726453841> You do not have permission to use this command.",
-            ephemeral=True
-        )
+        await interaction.response.send_message(" <a:epic_skull:1369682573726453841> You do not have permission to use this command.", ephemeral=True)
 
 
 
