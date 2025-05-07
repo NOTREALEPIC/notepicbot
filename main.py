@@ -217,11 +217,13 @@ async def proinfo(interaction: discord.Interaction, fid: str):
         SEC = data["SEC"]
         THIRD = data["THIRD"]
         FOUR = data["FOUR"]
+        FIVE = data["FIVE"]
 
         await interaction.edit_original_response(content=f" {FIRST}")
         await interaction.followup.send(content=f"{SEC}")
         await interaction.followup.send(content=f"{THIRD}")
         await interaction.followup.send(content=f"{FOUR}")
+        await interaction.followup.send(content=f"{FIVE}")
     except Exception as e:
         await interaction.edit_original_response(content=f"Error: {e}")
 
