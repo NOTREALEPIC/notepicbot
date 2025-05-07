@@ -12,8 +12,8 @@ pro_file_info = {
 <a:animatedboost:1234023770692390922> **Movie-Accurate Design** – Faithfully recreated from *Cars 3*
 <a:animatedboost:1234023770692390922> **High-Fidelity Textures** – HQ tyres, reflections, materials
 <a:animatedboost:1234023770692390922> **Eye Animation** – Realistic animated eyes, just like the film
-<a:animatedboost:1234023770692390922> **Optimized for Performance** – Clean rigging, smooth usage
-
+<a:animatedboost:1234023770692390922> **Optimized for Performance** – Clean rigging, smooth usage """,
+        "SEC": """
 ### <a:MoneySoaring:1369448460276989982> **PRICE**
 
 *  **\$10 USD** *(Global)* **|  ₹799 INR** *(India)*
@@ -24,8 +24,8 @@ pro_file_info = {
 
 *  <a:epicmail:1369688475670151168> Email: `--------------`
 *  <a:CashMoney:1369690730376728667> Currency: USD / INR
-*  <a:epicnote:1369689849472225325> Reference: *McQueen Mod*
-
+*  <a:epicnote:1369689849472225325> Reference: *McQueen Mod* """,
+        "THIRD": """
 ###  <a:epicupi:1369695243410341949> UPI (For Indian Users)
 
 *  <a:epicupi:1369695243410341949> UPI ID: `---------`
@@ -41,7 +41,7 @@ pro_file_info = {
 * This is a digital asset; once delivered, it’s final
 
 """,
-    "LEAK":"""# 🔒 **Leak Protection Notice**
+    "FOUR": """ # 🔒 **Leak Protection Notice**
 
 ## All paid files contain a unique **individual identification ID** tied to the buyer. If a file is leaked, we can easily trace it back to the original purchaser.
 
@@ -49,10 +49,9 @@ pro_file_info = {
 ## If a file is leaked from your end, appropriate actions will be taken.
 
 🔐 *Selling mods. Not dreams.*
-💬 Need help? Our team’s always online in **#support**
-
-
- <a:epicsmile:1234023404986830878>  **PREVIEW**
+💬 Need help? Our team’s always online in **#support** """,
+    "FIVE": """ 
+<a:epicsmile:1234023404986830878>  **PREVIEW**
 https://youtu.be/DGynsgRObZk
 https://youtu.be/_Xn8MrkOa5c
 https://youtu.be/IhS12YicXiQ
