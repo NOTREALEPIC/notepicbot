@@ -1,6 +1,6 @@
 pro_file_info = {
     "Lightning_McQueen_Cars_3_EPIC_Edition": {
-        "INFO": """  ## <a:lightning:1369441281264189601> **Lightning McQueen – Cars 3 EPIC Edition**
+        "FIRST": """  ## <a:lightning:1369441281264189601> **Lightning McQueen – Cars 3 EPIC Edition**
 
                 > <a:epicapproved:1369452022004191304> *High-Quality GTA V Mod Inspired by Disney-Pixar’s Cars 3*
                 > <a:epicapproved:1369452022004191304> *Movie-accurate 3D model built with premium textures and clean details*
@@ -12,9 +12,9 @@ pro_file_info = {
                 <a:animatedboost:1234023770692390922> **Movie-Accurate Design** – Faithfully recreated from *Cars 3*
                 <a:animatedboost:1234023770692390922> **High-Fidelity Textures** – HQ tyres, reflections, materials
                 <a:animatedboost:1234023770692390922> **Eye Animation** – Realistic animated eyes, just like the film
-                <a:animatedboost:1234023770692390922> **Optimized for Performance** – Clean rigging, smooth usage 
+                <a:animatedboost:1234023770692390922> **Optimized for Performance** – Clean rigging, smooth usage """,
                 
-                ### <a:MoneySoaring:1369448460276989982> **PRICE**
+        "SEC":""" ### <a:MoneySoaring:1369448460276989982> **PRICE**
 
                 *  **\$10 USD** *(Global)* **|  ₹799 INR** *(India)*
 
@@ -29,9 +29,9 @@ pro_file_info = {
 
                 *  <a:epicupi:1369695243410341949> UPI ID: `---------`
                 *  <a:epicprofile:1369697072017707045> Name: *------*
-                *  <a:epicnote:1369689849472225325> Note: *McQueen Cars 3 Mod*
+                *  <a:epicnote:1369689849472225325> Note: *McQueen Cars 3 Mod* """,
 
-                # **Read the Terms & Conditions before proceeding.**
+        "THIRD":""" # **Read the Terms & Conditions before proceeding.**
 
                 🚫 **Terms of Use**
 
@@ -44,9 +44,9 @@ pro_file_info = {
                 ## All paid files contain a unique **individual identification ID** tied to the buyer. If a file is leaked, we can easily trace it back to the original purchaser.
 
                 ## **File protection is your responsibility.**
-                ## If a file is leaked from your end, appropriate actions will be taken.
+                ## If a file is leaked from your end, appropriate actions will be taken. """,
 
-                🔐 *Selling mods. Not dreams.*
+        "FIVE":"""🔐 *Selling mods. Not dreams.*
                 💬 Need help? Our team’s always online in **#support** 
                 
                 <a:epicsmile:1234023404986830878>  **PREVIEW**
