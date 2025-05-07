@@ -213,11 +213,15 @@ async def proinfo(interaction: discord.Interaction, fid: str):
             return
     
         data = pro_file_info[fid]
-        INFO = data["INFO"]
-        LEAK = data["LEAK"]
+        FIRST = data["FIRST"]
+        SEC = data["SEC"]
+        THIRD = data["THIRD"]
+        FOUR = data["FOUR"]
 
-        await interaction.edit_original_response(content=f" {INFO}")
-        await interaction.followup.send(content=f"{LEAK}")
+        await interaction.edit_original_response(content=f" {FIRST}")
+        await interaction.followup.send(content=f"{SEC}")
+        await interaction.followup.send(content=f"{THIRD}")
+        await interaction.followup.send(content=f"{FOUR}")
     except Exception as e:
         await interaction.edit_original_response(content=f"Error: {e}")
 
