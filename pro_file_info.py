@@ -25,7 +25,7 @@ pro_file_info = {
                 *  <a:epicmail:1369688475670151168> Email: `--------------`
                 *  <a:CashMoney:1369690730376728667> Currency: USD / INR
                 *  <a:epicnote:1369689849472225325> Reference: *McQueen Mod* """,
-                        "THIRD": """
+        "THIRD": """
                 ###  <a:epicupi:1369695243410341949> UPI (For Indian Users)
 
                 *  <a:epicupi:1369695243410341949> UPI ID: `---------`
