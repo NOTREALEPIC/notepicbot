@@ -40,7 +40,8 @@ pro_file_info = {
 * Redistribution or resale is strictly prohibited
 * This is a digital asset; once delivered, it’s final
 
-# 🔒 **Leak Protection Notice**
+""",
+    "LEAK":"""# 🔒 **Leak Protection Notice**
 
 ## All paid files contain a unique **individual identification ID** tied to the buyer. If a file is leaked, we can easily trace it back to the original purchaser.
 
@@ -62,6 +63,7 @@ https://media.discordapp.net/attachments/1233831270866227271/1369456000540737607
 https://media.discordapp.net/attachments/1233831270866227271/1369456000540737607/MC-PRO_PREVIEW_9.png?ex=681c9589&is=681b4409&hm=e3f0ec87ee91e9c5ca4adbb330d903dd633044858ffee6c7f92411ebfad6cf44&=&format=webp&quality=lossless&width=1461&height=822
 https://media.discordapp.net/attachments/1233831270866227271/1369455999853006848/MC-PRO_PREVIEW_8.png?ex=681c9589&is=681b4409&hm=a46915146935215e7f1bad546f6a6d6e0d11fe6be64ca0ed84828b3cea006d3e&=&format=webp&quality=lossless&width=1461&height=822
  """
+
     },
     
     
