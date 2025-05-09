@@ -207,6 +207,10 @@ async def fid_autocomplete(interaction: discord.Interaction, current: str):
 @commands.cooldown(1, 10, commands.BucketType.user)
 async def proinfo(interaction: discord.Interaction, fid: str):
     try:
+        allowed_category_id = 1369408086967844924  # <-- Replace with your Category ID
+        if interaction.channel.category_id != allowed_category_id:
+            await interaction.response.send_message("ONLY WORK IN TICKET", ephemeral=True)
+            return
         await interaction.response.defer(thinking=True)
         if fid not in pro_file_info:
             await interaction.edit_original_response(content="No file named this. Please check the spelling.")
