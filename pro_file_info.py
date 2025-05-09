@@ -16,14 +16,14 @@ pro_file_info = {
 *  **\$10 USD** *(Global)* **|  ₹799 INR** *(India)*
 
 ### <a:epicvisa:1369685900379951224> **AVAILABLE PAYMENT METHODS**
-### <a:wise:1369686900708872294> WISE 
-*  <a:epicmail:1369688475670151168> Email: `--------------`
+### <:wise:1369686900708872294> WISE 
+*  <:epicmail:1369688475670151168> Email: `--------------`
 *  <a:CashMoney:1369690730376728667> Currency: USD / INR
-*  <a:epicnote:1369689849472225325> Reference: *McQueen Mod* 
+*  <:epicnote:1369689849472225325> Reference: *McQueen Mod* 
 ### <a:epicupi:1369695243410341949> UPI (For Indian Users)
 *  <a:epicupi:1369695243410341949> UPI ID: `---------`
-*  <a:epicprofile:1369697072017707045> Name: *------*
-*  <a:epicnote:1369689849472225325> Note: *McQueen Cars 3 Mod* """,
+*  <:epicprofile:1369697072017707045> Name: *------*
+*  <:epicnote:1369689849472225325> Note: *McQueen Cars 3 Mod* """,
 
         "THIRD":""" 
                 # **Read the Terms & Conditions before proceeding.**
