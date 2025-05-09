@@ -26,7 +26,7 @@ pro_file_info = {
 *  <:epicnote:1369689849472225325> Note: *McQueen Cars 3 Mod* """,
 
         "THIRD":""" 
-                # **Read the Terms & Conditions before proceeding.**
+                # **Read the <#1328346728981856318> before proceeding.**
 
 🚫 **Terms of Use**
 *  No refunds after delivery
