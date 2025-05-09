@@ -201,7 +201,7 @@ async def fid_autocomplete(interaction: discord.Interaction, current: str):
     ][:25]
 
 @tree.command(name="proinfo", description="Get info about paid files",guild=discord.Object(id=1232208366735196283))
-@app_commands.checks.has_role("ROOT")
+@app_commands.checks.has_role("LEGIT")
 @app_commands.describe(fid="Enter the file or select from the list.")
 @app_commands.autocomplete(fid=fid_autocomplete)
 @commands.cooldown(1, 10, commands.BucketType.user)
