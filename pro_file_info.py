@@ -46,7 +46,7 @@ pro_file_info = {
                 ## **File protection is your responsibility.**
                 ## If a file is leaked from your end, appropriate actions will be taken. """,
 
-        "FIVE":"""🔐 *Selling mods. Not dreams.*
+        "FOUR":"""🔐 *Selling mods. Not dreams.*
                 💬 Need help? Our team’s always online in **#support** 
                 
                 <a:epicsmile:1234023404986830878>  **PREVIEW**
