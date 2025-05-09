@@ -18,26 +18,28 @@ pro_file_info = {
 
                 *  **\$10 USD** *(Global)* **|  ₹799 INR** *(India)*
 
-                ###  <a:epicvisa:1369685900379951224> **AVAILABLE PAYMENT METHODS**
+                ### <a:epicvisa:1369685900379951224> **AVAILABLE PAYMENT METHODS**
 
-                ###  <a:wise:1369686900708872294>  WISE 
+                ### <a:wise:1369686900708872294> WISE 
 
                 *  <a:epicmail:1369688475670151168> Email: `--------------`
                 *  <a:CashMoney:1369690730376728667> Currency: USD / INR
                 *  <a:epicnote:1369689849472225325> Reference: *McQueen Mod* 
-                ###  <a:epicupi:1369695243410341949> UPI (For Indian Users)
+                
+                ### <a:epicupi:1369695243410341949> UPI (For Indian Users)
 
                 *  <a:epicupi:1369695243410341949> UPI ID: `---------`
                 *  <a:epicprofile:1369697072017707045> Name: *------*
                 *  <a:epicnote:1369689849472225325> Note: *McQueen Cars 3 Mod* """,
 
-        "THIRD":""" # **Read the Terms & Conditions before proceeding.**
+        "THIRD":""" 
+                # **Read the Terms & Conditions before proceeding.**
 
                 🚫 **Terms of Use**
 
-                * No refunds after delivery
-                * Redistribution or resale is strictly prohibited
-                * This is a digital asset; once delivered, it’s final 
+                *  No refunds after delivery
+                *  Redistribution or resale is strictly prohibited
+                *  This is a digital asset; once delivered, it’s final 
                 
                 # 🔒 **Leak Protection Notice**
 
@@ -46,10 +48,12 @@ pro_file_info = {
                 ## **File protection is your responsibility.**
                 ## If a file is leaked from your end, appropriate actions will be taken. """,
 
-        "FOUR":"""🔐 *Selling mods. Not dreams.*
+        "FOUR":"""
+                🔐 *Selling mods. Not dreams.*
                 💬 Need help? Our team’s always online in **#support** 
                 
-                <a:epicsmile:1234023404986830878>  **PREVIEW**
+                # <a:epicsmile:1234023404986830878>  **PREVIEW**
+                
                 https://youtu.be/DGynsgRObZk
                 https://youtu.be/_Xn8MrkOa5c
                 https://youtu.be/IhS12YicXiQ
