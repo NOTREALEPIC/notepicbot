@@ -13,7 +13,7 @@ pro_file_info = {
 <a:animatedboost:1234023770692390922> **Optimized for Performance** – Clean rigging, smooth usage """,
                 
         "SEC":""" ### <a:MoneySoaring:1369448460276989982> **PRICE**
-*  **\$10 USD** *(Global)* **|  ₹799 INR** *(India)*
+*  **\$4 USD** *(Global)* **|  ₹200 INR** *(India)*
 
 ### <a:epicvisa:1369685900379951224> **AVAILABLE PAYMENT METHODS**
 ### <:wise:1369686900708872294> WISE 
