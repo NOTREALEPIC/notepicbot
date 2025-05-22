@@ -11,6 +11,8 @@ from files import files_data
 from pro_file_info import pro_file_info
 from paid_id import paid_id_data
 from licence import license_descriptions
+from discord.ext import tasks
+from datetime import datetime, timedelta
 
 # Cooldown check to prevent rapid restarts
 def check_restart_limit():
@@ -234,7 +236,53 @@ async def proinfo(interaction: discord.Interaction, fid: str):
 async def proinfo_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.errors.MissingRole):
         await interaction.response.send_message(" <a:epic_skull:1369682573726453841> You do not have permission to use this command.", ephemeral=True)
+#################-------UPTIME--------#################
+start_time = datetime.utcnow()
+status_message = None  # to hold the live status message
+bot_info_channel_id = 123456789012345678  # replace with your bot-info channel ID
+status_message_id_path = "status_msg_id.txt"
 
+@tasks.loop(minutes=5)
+async def update_status_embed():
+    global status_message
+
+    now = datetime.utcnow()
+    uptime = str(now - start_time).split('.')[0]  # clean HH:MM:SS
+
+    # Check if /ping works
+    try:
+        synced = await tree.sync()
+        command_status = "🟢 Working"
+    except Exception as e:
+        command_status = "🔴 Not Working"
+
+    embed = discord.Embed(
+        title="🤖 Bot Status Monitor",
+        color=0x00ff00 if command_status == "🟢 Working" else 0xff0000
+    )
+    embed.add_field(name="Status", value="🟢 Online", inline=True)
+    embed.add_field(name="Uptime", value=f"`{uptime}`", inline=True)
+    embed.add_field(name="Command Check", value=command_status, inline=True)
+    embed.set_footer(text="Last update")
+
+    channel = bot.get_channel(bot_info_channel_id)
+    if not channel:
+        print("❌ Bot info channel not found!")
+        return
+
+    try:
+        # Update the same message every time
+        if os.path.exists(status_message_id_path):
+            with open(status_message_id_path, "r") as f:
+                msg_id = int(f.read())
+                msg = await channel.fetch_message(msg_id)
+                await msg.edit(embed=embed)
+        else:
+            msg = await channel.send(embed=embed)
+            with open(status_message_id_path, "w") as f:
+                f.write(str(msg.id))
+    except Exception as e:
+        print(f"❌ Error updating bot status message: {e}")
 
 
 # Bot ready event
@@ -244,6 +292,7 @@ async def on_ready():
     await tree.sync(guild=discord.Object(id=1232208366735196283)) 
     await tree.sync(guild=discord.Object(id=1358758393300648126)) # Add this line with your server ID
     print(f"✅ Bot ready as {bot.user}")
+    update_status_embed.start()
 
 
 # Flask server (keeps the bot alive)
