@@ -242,7 +242,7 @@ status_message = None  # to hold the live status message
 bot_info_channel_id = 1369435929604784262  # replace with your bot-info channel ID
 status_message_id_path = "status_msg_id.txt"
 
-@tasks.loop(minutes=5)
+@tasks.loop(seconds=60)
 async def update_status_embed():
     global status_message
 
