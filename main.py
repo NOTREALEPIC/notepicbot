@@ -250,7 +250,7 @@ async def update_status_embed():
     uptime = str(now - start_time).split('.')[0]  # clean HH:MM:SS
 
     # Check if /ping works
-   try:
+    try:
         await bot.fetch_user(bot.user.id)  # simple ping to Discord API
         command_status = "🟢 Working"
         color = 0x00ff00  # green
