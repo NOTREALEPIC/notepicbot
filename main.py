@@ -24,7 +24,7 @@ def check_restart_limit():
             last_time = float(f.read().strip())
         if current_time - last_time < 1200:  # 10 minutes
             print("⛔ Too soon to restart. Exiting to avoid rate-limit.")
-            exit()
+            sys.exit()
 
     with open(path, "w") as f:
         f.write(str(current_time))
@@ -67,7 +67,7 @@ async def model_autocomplete(interaction: discord.Interaction, current: str):
 @app_commands.describe(modelname="File")
 @app_commands.autocomplete(modelname=model_autocomplete)
 @app_commands.checks.has_role("LEGIT")
-@commands.cooldown(1, 10, commands.BucketType.user)
+@app_commands.checks.cooldown(1, 10.0, key=lambda i: (i.user.id))
 async def pass_command(interaction: discord.Interaction, modelname: str):
     if modelname not in files_data:
         await interaction.response.send_message(" Model not found!", ephemeral=True)
@@ -107,7 +107,7 @@ async def pass_command_error(interaction: discord.Interaction, error):
 @tree.command(name="code", description="genarate code ",guild=discord.Object(id=1232208366735196283))
 @app_commands.default_permissions(administrator=True)
 @app_commands.checks.has_role("ROOT")
-@commands.cooldown(1, 10, commands.BucketType.user)
+@app_commands.checks.cooldown(1, 10.0, key=lambda i: (i.user.id))
 async def code(interaction: discord.Interaction):
     await interaction.response.defer(thinking=True)
     while True:
@@ -147,7 +147,7 @@ async def code_autocomplete(interaction: discord.Interaction, current: str):
 @app_commands.checks.has_role("ROOT")
 @app_commands.describe(code="Enter the customer's code")
 @app_commands.autocomplete(code=code_autocomplete)
-@commands.cooldown(1, 10, commands.BucketType.user)
+@app_commands.checks.cooldown(1, 10.0, key=lambda i: (i.user.id))
 async def paid_id(interaction: discord.Interaction, code: str):
     try:
         await interaction.response.defer(thinking=True)
@@ -206,7 +206,7 @@ async def fid_autocomplete(interaction: discord.Interaction, current: str):
 @app_commands.checks.has_role("LEGIT")
 @app_commands.describe(fid="Enter the file or select from the list.")
 @app_commands.autocomplete(fid=fid_autocomplete)
-@commands.cooldown(1, 10, commands.BucketType.user)
+@app_commands.checks.cooldown(1, 10.0, key=lambda i: (i.user.id))
 async def proinfo(interaction: discord.Interaction, fid: str):
     try:
         allowed_category_id = 1369408086967844924  # <-- Replace with your Category ID
