@@ -239,7 +239,7 @@ async def proinfo_error(interaction: discord.Interaction, error):
 #################-------UPTIME--------#################
 start_time = datetime.utcnow()
 status_message = None  # to hold the live status message
-bot_info_channel_id = 123456789012345678  # replace with your bot-info channel ID
+bot_info_channel_id = 1369435929604784262  # replace with your bot-info channel ID
 status_message_id_path = "status_msg_id.txt"
 
 @tasks.loop(minutes=5)
