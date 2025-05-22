@@ -250,11 +250,14 @@ async def update_status_embed():
     uptime = str(now - start_time).split('.')[0]  # clean HH:MM:SS
 
     # Check if /ping works
-    try:
-        synced = await tree.sync()
+   try:
+        await bot.fetch_user(bot.user.id)  # simple ping to Discord API
         command_status = "🟢 Working"
-    except Exception as e:
+        color = 0x00ff00  # green
+    except Exception:
         command_status = "🔴 Not Working"
+        color = 0xff0000  # red
+
 
     embed = discord.Embed(
         title="🤖 Bot Status Monitor",
