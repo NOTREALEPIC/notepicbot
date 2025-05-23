@@ -249,6 +249,8 @@ async def update_status_embed():
     now = datetime.utcnow()
     uptime = str(now - start_time).split('.')[0]  # clean HH:MM:SS
 
+    ist_time = (now + timedelta(hours=5, minutes=30)).strftime('%Y-%m-%d %H:%M:%S')
+
     # Check if /ping works
     try:
         await bot.fetch_user(bot.user.id)  # simple ping to Discord API
@@ -266,7 +268,7 @@ async def update_status_embed():
     embed.add_field(name="Status", value="🟢 Online", inline=True)
     embed.add_field(name="Uptime", value=f"`{uptime}`", inline=True)
     embed.add_field(name="Command Check", value=command_status, inline=True)
-    embed.set_footer(text="Last update")
+    embed.set_footer(text=f"Last update: {ist_time} IST")
 
     channel = bot.get_channel(bot_info_channel_id)
     if not channel:
