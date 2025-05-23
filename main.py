@@ -71,7 +71,7 @@ tree = bot.tree
 start_time = datetime.utcnow()
 
 # Channel ID where uptime embed will be posted (change this)
-UPTIME_CHANNEL_ID = 123456789012345678  # <-- Replace with your channel ID
+UPTIME_CHANNEL_ID = 1369435929604784262  # <-- Replace with your channel ID
 
 # Message ID for uptime embed, will be set after first send
 status_message_id = None
