@@ -18,6 +18,7 @@ from paid_id import paid_id_data
 from licence import license_descriptions
 
 # ----------- Setup Logging (Better than print for production) -----------
+
 logging.basicConfig(
     level=logging.INFO,
     format='[%(asctime)s] %(levelname)s - %(message)s',
@@ -25,6 +26,7 @@ logging.basicConfig(
 )
 
 # ----------- Cooldown Check to Avoid Rapid Restarts -----------
+
 def check_restart_limit():
     path = "last_restart.txt"
     current_time = time.time()
@@ -32,7 +34,7 @@ def check_restart_limit():
     if os.path.exists(path):
         with open(path, "r") as f:
             last_time = float(f.read().strip())
-        if current_time - last_time < 1200:  # 20 minutes cooldown (you had 10)
+        if current_time - last_time < 1200:  # 20 minutes cooldown
             logging.error("⛔ Too soon to restart. Exiting to avoid rate-limit.")
             sys.exit()
 
@@ -63,6 +65,16 @@ intents.message_content = True  # Required for commands reading message content
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 tree = bot.tree
+
+# ----------- Uptime Tracking -----------
+
+start_time = datetime.utcnow()
+
+# Channel ID where uptime embed will be posted (change this)
+UPTIME_CHANNEL_ID = 123456789012345678  # <-- Replace with your channel ID
+
+# Message ID for uptime embed, will be set after first send
+status_message_id = None
 
 # ----------- Autocomplete Functions -----------
 
@@ -127,7 +139,6 @@ async def pass_command_error(interaction: discord.Interaction, error):
     else:
         logging.error(f"Error in pass_command: {error}")
 
-# Code generation command
 @tree.command(
     name="code",
     description="Generate code",
@@ -139,7 +150,7 @@ async def pass_command_error(interaction: discord.Interaction, error):
 async def code_command(interaction: discord.Interaction):
     await interaction.response.defer(thinking=True)
     new_code = None
-    for _ in range(100):  # Try 100 times max
+    for _ in range(100):
         candidate = generate_code()
         if not check_code_exists(candidate):
             new_code = candidate
@@ -149,7 +160,6 @@ async def code_command(interaction: discord.Interaction):
         await interaction.followup.send("Failed to generate a unique code. Try again later.")
         return
 
-    # Ensure file exists
     if not os.path.exists("generated_codes.txt"):
         with open("generated_codes.txt", "w"): pass
 
@@ -167,7 +177,6 @@ async def code_error(interaction: discord.Interaction, error):
         logging.error(f"Error in code_command: {error}")
         await interaction.response.send_message(f"An error occurred: {error}", ephemeral=True)
 
-# Paid ID command
 @tree.command(
     name="paid_id",
     description="Customer info",
@@ -208,7 +217,6 @@ async def paid_id_error(interaction: discord.Interaction, error):
     else:
         logging.error(f"Error in paid_id_command: {error}")
 
-# Pro file info command
 @tree.command(
     name="proinfo",
     description="Get info about paid files",
@@ -222,64 +230,116 @@ async def proinfo_command(interaction: discord.Interaction, fid: str):
     try:
         allowed_category_id = 1369408086967844924  # Replace with your Category ID
         if interaction.channel.category_id != allowed_category_id:
-            await interaction.response.send_message("ONLY WORK IN TICKET", ephemeral=True)
+            await interaction.response.send_message("ONLY IN PROFILES CATEGORY", ephemeral=True)
             return
-        await interaction.response.defer(thinking=True)
+
         if fid not in pro_file_info:
-            await interaction.edit_original_response(content="No file named this. Please check the spelling.")
+            await interaction.response.send_message("File not found.", ephemeral=True)
             return
 
         data = pro_file_info[fid]
-        await interaction.edit_original_response(content=data["FIRST"])
-        # Send other parts without pings
-        await interaction.channel.send(content=data["SEC"], allowed_mentions=discord.AllowedMentions.none())
-        await interaction.channel.send(content=data["THIRD"], allowed_mentions=discord.AllowedMentions.none())
-        await interaction.channel.send(content=data["FOUR"], allowed_mentions=discord.AllowedMentions.none())
+
+        embed = Embed(title=f"INFO: {fid}", color=0x2ecc71)
+        embed.add_field(name="```|``` File name", value=f"```{fid}```", inline=False)
+        embed.add_field(name="```|``` Size", value=f"```{data['size']}```", inline=True)
+        embed.add_field(name="```|``` Version", value=f"```{data['version']}```", inline=True)
+        embed.add_field(name="```|``` FOR", value=f"```{data['for']}```", inline=True)
+        embed.add_field(name="```|``` Last update", value=f"```{data['last_update']}```", inline=True)
+        embed.add_field(name="```|``` Password", value=f"```{data['password']}```", inline=True)
+        embed.add_field(name="```|``` License", value=f"```{data['license']}```", inline=True)
+
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
     except Exception as e:
         logging.error(f"Error in proinfo_command: {e}")
-        await interaction.edit_original_response(content=f"Error: {e}")
 
 @proinfo_command.error
 async def proinfo_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.errors.MissingRole):
-        await interaction.response.send_message(
-            "<a:epic_skull:1369682573726453846> Verify in <#1233843778754838679> to continue.",
-            ephemeral=True
-        )
+        await interaction.response.send_message("Access denied.", ephemeral=True)
     else:
         logging.error(f"Error in proinfo_command: {error}")
 
-# ----------- Run Bot -----------
+# ----------- Uptime Embed Task -----------
 
-# Get token securely from environment variable or file (never hardcode tokens!)
-TOKEN = os.getenv("asmr")
-if not TOKEN:
-    logging.error("Discord token not found in environment variable DISCORD_BOT_TOKEN.")
-    sys.exit()
+@tasks.loop(seconds=60)
+async def update_uptime_embed():
+    global status_message_id
 
-# ----------- Flask Uptime -----------
+    channel = bot.get_channel(UPTIME_CHANNEL_ID)
+    if not channel:
+        logging.warning(f"Uptime channel ID {UPTIME_CHANNEL_ID} not found.")
+        return
 
-app = Flask("")
+    uptime_seconds = (datetime.utcnow() - start_time).total_seconds()
+    uptime_str = str(timedelta(seconds=int(uptime_seconds)))
 
-@app.route("/")
-def home():
-    return "Bot is running and alive!"
+    embed = Embed(title="Bot Uptime Status", color=0x1abc9c)
+    embed.add_field(name="Status", value="🟢 Online", inline=True)
+    embed.add_field(name="Uptime", value=uptime_str, inline=True)
+    embed.timestamp = datetime.utcnow()
 
-def run_flask():
-    app.run(host="0.0.0.0", port=8080)
+    try:
+        if status_message_id:
+            # Try to fetch and edit existing message
+            msg = await channel.fetch_message(status_message_id)
+            await msg.edit(embed=embed)
+        else:
+            # Send new message and save ID
+            msg = await channel.send(embed=embed)
+            status_message_id = msg.id
+    except discord.NotFound:
+        # Message deleted, reset message id and send a new one
+        status_message_id = None
+    except Exception as e:
+        logging.error(f"Error updating uptime embed: {e}")
 
-# Run Flask in a separate thread
-flask_thread = Thread(target=run_flask)
-flask_thread.start()
-
-# ----------- Run the bot -----------
+# ----------- Events -----------
 
 @bot.event
 async def on_ready():
     logging.info(f"Logged in as {bot.user} (ID: {bot.user.id})")
     logging.info("------")
-    await tree.sync()
-    logging.info("Commands synced!")
+    try:
+        synced = await tree.sync()
+        logging.info(f"Synced {len(synced)} commands.")
+    except Exception as e:
+        logging.error(f"Error syncing commands: {e}")
 
-bot.run(TOKEN)
+    update_uptime_embed.start()
+
+@bot.event
+async def on_app_command_error(interaction: discord.Interaction, error):
+    if isinstance(error, app_commands.CommandOnCooldown):
+        await interaction.response.send_message(
+            f"Slow down! Try again in {error.retry_after:.2f} seconds.", ephemeral=True
+        )
+    else:
+        logging.error(f"Unhandled app command error: {error}")
+
+# ----------- Flask App for Uptime -----------
+
+app = Flask("")
+
+@app.route("/")
+def home():
+    return "Bot is alive!"
+
+def run_flask():
+    app.run(host="0.0.0.0", port=8080)
+
+# ----------- Main Entrypoint -----------
+
+if __name__ == "__main__":
+    # Start flask in a separate thread
+    flask_thread = Thread(target=run_flask)
+    flask_thread.daemon = True
+    flask_thread.start()
+
+    # Run the bot
+    TOKEN = os.getenv("asmr")  # Or replace with your token string here
+    if not TOKEN:
+        logging.error("DISCORD_TOKEN environment variable not set!")
+        sys.exit(1)
+
+    bot.run(TOKEN)
