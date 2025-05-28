@@ -260,39 +260,7 @@ async def proinfo_error(interaction: discord.Interaction, error):
     else:
         logging.error(f"Error in proinfo_command: {error}")
 
-# ----------- Uptime Embed Task -----------
 
-@tasks.loop(seconds=60)
-async def update_uptime_embed():
-    global status_message_id
-
-    channel = bot.get_channel(UPTIME_CHANNEL_ID)
-    if not channel:
-        logging.warning(f"Uptime channel ID {UPTIME_CHANNEL_ID} not found.")
-        return
-
-    uptime_seconds = (datetime.utcnow() - start_time).total_seconds()
-    uptime_str = str(timedelta(seconds=int(uptime_seconds)))
-
-    embed = Embed(title="Bot Uptime Status", color=0x1abc9c)
-    embed.add_field(name="Status", value="🟢 Online", inline=True)
-    embed.add_field(name="Uptime", value=uptime_str, inline=True)
-    embed.timestamp = datetime.utcnow()
-
-    try:
-        if status_message_id:
-            # Try to fetch and edit existing message
-            msg = await channel.fetch_message(status_message_id)
-            await msg.edit(embed=embed)
-        else:
-            # Send new message and save ID
-            msg = await channel.send(embed=embed)
-            status_message_id = msg.id
-    except discord.NotFound:
-        # Message deleted, reset message id and send a new one
-        status_message_id = None
-    except Exception as e:
-        logging.error(f"Error updating uptime embed: {e}")
 
 # ----------- Events -----------
 
