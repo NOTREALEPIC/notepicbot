@@ -274,7 +274,6 @@ async def on_ready():
     except Exception as e:
         logging.error(f"Error syncing commands: {e}")
 
-    update_uptime_embed.start()
 
 @bot.event
 async def on_app_command_error(interaction: discord.Interaction, error):
