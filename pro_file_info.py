@@ -12,8 +12,8 @@ pro_file_info = {
 <a:animatedboost:1234023770692390922> **Eye Animation** – Realistic animated eyes, just like the film
 <a:animatedboost:1234023770692390922> **Optimized for Performance** – Clean rigging, smooth usage """,
                 
-        "SEC":""" ### <a:MoneySoaring:1369448460276989982> **PRICE**
-*  **\$4 USD** *(Global)* **|  ₹200 INR** *(India)*
+        "SEC": """ ### <a:MoneySoaring:1369448460276989982> **PRICE**
+*  **$4 USD** *(Global)* **|  ₹200 INR** *(India)*
 
 ### <a:epicvisa:1369685900379951224> **AVAILABLE PAYMENT METHODS**
 ### <:wise:1369686900708872294> WISE 
@@ -25,7 +25,7 @@ pro_file_info = {
 *  <:epicprofile:1369697072017707045> Name: *------*
 *  <:epicnote:1369689849472225325> Note: *McQueen Cars 3 Mod* """,
 
-        "THIRD":""" 
+        "THIRD": """ 
                 # **Read the <#1328346728981856318> before proceeding.**
 
 🚫 **Terms of Use**
@@ -38,7 +38,7 @@ pro_file_info = {
 ## **File protection is your responsibility.**
 ## If a file is leaked from your end, appropriate actions will be taken. """,
 
-        "FOUR":"""
+        "FOUR": """
 🔐 *Selling mods. Not dreams.*
 💬 Need help? Our team’s always online in **#support** 
                 
@@ -55,9 +55,5 @@ https://i.ibb.co/5hQkB8g2/MC-PRO-PREVIEW-7.png
 https://i.ibb.co/KjRmtJM8/MC-PRO-PREVIEW-8.png
 https://i.ibb.co/k69s4RrC/MC-PRO-PREVIEW-9.png
 """
-                
-
-    },
-    
-    
+    }
 }
