@@ -283,6 +283,50 @@ async def spread(interaction: discord.Interaction, channel_id: str, message: str
         logging.error(f"Error in /spread: {e}")
         await interaction.response.send_message("⚠️ Failed to send message.", ephemeral=True)
 
+@tree.command(
+    name="epicembed",
+    description="Send an embed message to a specific channel by ID",
+    guild=discord.Object(id=1232208366735196283)
+)
+@app_commands.describe(
+    channel_id="The ID of the channel",
+    title="Embed title (optional)",
+    description="Embed description",
+    color="Embed color in HEX (e.g. #3498db, optional)"
+)
+@app_commands.default_permissions(administrator=True)
+@app_commands.checks.has_role("ROOT")
+@app_commands.checks.cooldown(1, 5.0, key=lambda i: i.user.id)
+async def epicembed(
+    interaction: discord.Interaction,
+    channel_id: str,
+    description: str,
+    title: str = None,
+    color: str = "#3498db"
+):
+    try:
+        channel = bot.get_channel(int(channel_id))
+        if not channel:
+            await interaction.response.send_message("❌ Channel not found.", ephemeral=True)
+            return
+        
+        # Parse color hex code, default to blue if invalid
+        try:
+            color_value = int(color.lstrip("#"), 16)
+            embed_color = discord.Color(color_value)
+        except:
+            embed_color = discord.Color.blue()
+        
+        embed = discord.Embed(title=title, description=description, color=embed_color)
+        await channel.send(embed=embed)
+        
+        await interaction.response.send_message(f"✅ Embed sent to {channel.mention}", ephemeral=True)
+    except Exception as e:
+        logging.error(f"Error in /epicembed: {e}")
+        await interaction.response.send_message("⚠️ Failed to send embed.", ephemeral=True)
+
+
+
 
 # ----------- Events -----------
 
