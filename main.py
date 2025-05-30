@@ -262,6 +262,16 @@ async def proinfo_error(interaction: discord.Interaction, error):
 
 
 
+@bot.command()
+async def spread(ctx, channel_id: int, *, message: str):
+    channel = bot.get_channel(channel_id)
+    if channel:
+        await channel.send(message)
+        await ctx.send(f"Message sent to {channel.mention}")
+    else:
+        await ctx.send("Channel not found.")
+
+
 # ----------- Events -----------
 
 @bot.event
