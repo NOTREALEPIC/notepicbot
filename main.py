@@ -262,14 +262,27 @@ async def proinfo_error(interaction: discord.Interaction, error):
 
 
 
-@bot.command()
-async def spread(ctx, channel_id: int, *, message: str):
-    channel = bot.get_channel(channel_id)
-    if channel:
+@tree.command(
+    name="spread",
+    description="Send a message to a specific channel by ID",
+    guild=discord.Object(id=1232208366735196283)
+)
+@app_commands.describe(channel_id="Channel ID to send the message to", message="The message to send")
+@app_commands.default_permissions(administrator=True)  # Optional: only admins
+@app_commands.checks.has_role("ROOT")  # Adjust role as needed
+async def spread_command(interaction: discord.Interaction, channel_id: str, message: str):
+    try:
+        channel = bot.get_channel(int(channel_id))
+        if not channel:
+            await interaction.response.send_message("❌ Channel not found. Make sure the bot is in the server and has access.", ephemeral=True)
+            return
+
         await channel.send(message)
-        await ctx.send(f"Message sent to {channel.mention}")
-    else:
-        await ctx.send("Channel not found.")
+        await interaction.response.send_message(f"✅ Message sent to {channel.mention}", ephemeral=True)
+
+    except Exception as e:
+        logging.error(f"Error in /spread command: {e}")
+        await interaction.response.send_message(f"❌ Error: {e}", ephemeral=True)
 
 
 # ----------- Events -----------
