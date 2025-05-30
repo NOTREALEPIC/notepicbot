@@ -267,22 +267,21 @@ async def proinfo_error(interaction: discord.Interaction, error):
     description="Send a message to a specific channel by ID",
     guild=discord.Object(id=1232208366735196283)
 )
-@app_commands.describe(channel_id="Channel ID to send the message to", message="The message to send")
-@app_commands.default_permissions(administrator=True)  # Optional: only admins
-@app_commands.checks.has_role("ROOT")  # Adjust role as needed
-async def spread_command(interaction: discord.Interaction, channel_id: str, message: str):
+@app_commands.describe(channel_id="The ID of the channel", message="Message to send")
+@app_commands.default_permissions(administrator=True)
+@app_commands.checks.has_role("ROOT")  # Optional: permission check
+@app_commands.checks.cooldown(1, 5.0, key=lambda i: i.user.id)
+async def spread(interaction: discord.Interaction, channel_id: str, message: str):
     try:
         channel = bot.get_channel(int(channel_id))
-        if not channel:
-            await interaction.response.send_message("❌ Channel not found. Make sure the bot is in the server and has access.", ephemeral=True)
-            return
-
-        await channel.send(message)
-        await interaction.response.send_message(f"✅ Message sent to {channel.mention}", ephemeral=True)
-
+        if channel:
+            await channel.send(message)
+            await interaction.response.send_message(f"✅ Message sent to {channel.mention}", ephemeral=True)
+        else:
+            await interaction.response.send_message("❌ Channel not found.", ephemeral=True)
     except Exception as e:
-        logging.error(f"Error in /spread command: {e}")
-        await interaction.response.send_message(f"❌ Error: {e}", ephemeral=True)
+        logging.error(f"Error in /spread: {e}")
+        await interaction.response.send_message("⚠️ Failed to send message.", ephemeral=True)
 
 
 # ----------- Events -----------
@@ -292,7 +291,6 @@ async def on_ready():
     logging.info(f"Logged in as {bot.user} (ID: {bot.user.id})")
     logging.info("------")
     try:
-        guild = discord.Object(id=1232208366735196283)
         synced = await tree.sync()
         logging.info(f"Synced {len(synced)} commands.")
     except Exception as e:
