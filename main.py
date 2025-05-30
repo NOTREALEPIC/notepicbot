@@ -292,6 +292,7 @@ async def on_ready():
     logging.info(f"Logged in as {bot.user} (ID: {bot.user.id})")
     logging.info("------")
     try:
+        guild = discord.Object(id=1232208366735196283)
         synced = await tree.sync()
         logging.info(f"Synced {len(synced)} commands.")
     except Exception as e:
