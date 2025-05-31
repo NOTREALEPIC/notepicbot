@@ -25,6 +25,30 @@ logging.basicConfig(
     handlers=[logging.StreamHandler()]
 )
 
+
+statuses = [
+    "Orchestrating silent backend chaos.",
+    "Playing with forbidden syscalls.",
+    "Exploiting glitches for science.",
+    "Refactoring the matrix, one bug at a time.",
+    "Executing covert backend maneuvers.",
+    "Tuning servers to borderline insanity.",
+    "Harvesting logs like a shadow gardener.",
+    "Playing chess with corrupted data.",
+    "Compiling secrets under NDA.",
+    "Automating the art of subtle sabotage.",
+    "Running dirty scripts professionally.",
+    "Silent guardian of digital entropy.",
+    "Injecting controlled chaos discreetly.",
+    "Playing with firewalls like a pyromaniac.",
+    "Hijacking processes with surgical precision.",
+    "Operating in the backend black market.",
+    "Refining errors into features.",
+    "Testing exploits with clinical detachment.",
+    "Playing behind the scenes — no witnesses.",
+    "Synchronizing with your worst nightmares."
+]
+
 # ----------- Cooldown Check to Avoid Rapid Restarts -----------
 
 def check_restart_limit():
@@ -340,6 +364,10 @@ async def on_ready():
         logging.info(f"Synced {len(synced)} commands.")
     except Exception as e:
         logging.error(f"Error syncing commands: {e}")
+    chosen_status = random.choice(statuses)
+    activity = discord.Activity(type=discord.ActivityType.playing, name=chosen_status)
+    await bot.change_presence(status=discord.Status.online, activity=activity)
+
 
 @bot.event
 async def on_app_command_error(interaction: discord.Interaction, error):
