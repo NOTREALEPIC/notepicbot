@@ -95,7 +95,7 @@ def check_code_exists(code: str) -> bool:
     return False
 
 # ----------- Discord Bot Setup -----------
-
+intents = discord.Intents.all()
 intents = discord.Intents.default()
 intents.message_content = True  # Required for commands reading message content
 
