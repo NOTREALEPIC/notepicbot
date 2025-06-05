@@ -421,10 +421,10 @@ async def on_member_remove(member):
                 # Send DM
                 try:
                     await member.send(
-                        "You have been temporarily banned from our server due to suspicious behavior: joining, accessing content, and leaving immediately.\n\n"
-                        "Using our mods in YouTube videos, content, or any form of media is STRICTLY PROHIBITED. Violation may lead to takedowns or legal strikes.\n\n"
-                        "If this was a mistake, you can appeal after the ban expires. Thank you."
-                    )
+                                "<a:lightning:1369441281264189601> {user}, welcome to the NOTTHEREALEPIC Discord server.\n\n"
+                                "<a:animetedrule:1234044425496428545> Read the rules and verify to get the LEGIT <a:animetedverify:1234049755844448329> role.\n\n"
+                                "https://cdn.discordapp.com/attachments/1233831270866227271/1379393664962527292/nre_animated_low_mb.gif?ex=6842b6f5&is=68416575&hm=74ad849bb664592ec36bc71b9b8ebfed5b030cd6b9d14d18fe629c50ad6fbd58&"
+                            )
                 except:
                     print(f"Could not DM {member}")
             except:
