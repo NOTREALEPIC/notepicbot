@@ -49,6 +49,16 @@ statuses = [
     "Synchronizing with your worst nightmares."
 ]
 
+
+
+user_activity = {}
+
+
+TARGET_ROLE_NAME = "LEGIT"
+BAN_DURATION_DAYS = 30
+TIME_LIMIT_MINUTES = 180
+
+
 # ----------- Cooldown Check to Avoid Rapid Restarts -----------
 
 def check_restart_limit():
@@ -377,6 +387,47 @@ async def on_app_command_error(interaction: discord.Interaction, error):
         )
     else:
         logging.error(f"Unhandled app command error: {error}")
+
+@bot.event
+async def on_member_join(member):
+    user_activity[member.id] = {"joined": datetime.utcnow(), "got_role": False}
+
+@bot.event
+async def on_member_update(before, after):
+    if not user_activity.get(after.id):
+        return
+    before_roles = set(before.roles)
+    after_roles = set(after.roles)
+    for role in after.roles:
+        if role.name == TARGET_ROLE_NAME and role not in before_roles:
+            user_activity[after.id]["got_role"] = True
+
+@bot.event
+async def on_member_remove(member):
+    activity = user_activity.get(member.id)
+    if not activity:
+        return
+
+    if activity["got_role"]:
+        time_spent = datetime.utcnow() - activity["joined"]
+        if time_spent < timedelta(minutes=TIME_LIMIT_MINUTES):
+            try:
+                # Ban for 30 days
+                await member.ban(reason="Accessed file and left within short time.", delete_message_days=0)
+
+                # Send DM
+                try:
+                    await member.send(
+                        "You have been temporarily banned (30 days) from our server due to suspicious behavior: joining, accessing content, and leaving immediately.\n\n"
+                        "⚠️ Using our mods in YouTube videos, content, or any form of media without permission is STRICTLY PROHIBITED. Violation may lead to takedowns or legal strikes.\n\n"
+                        "If this was a mistake, you can appeal after the ban expires. Thank you."
+                    )
+                except:
+                    print(f"Could not DM {member}")
+            except:
+                print(f"Could not ban {member}")
+    # Cleanup
+    user_activity.pop(member.id, None)
 
 # ----------- Flask App for Uptime -----------
 
