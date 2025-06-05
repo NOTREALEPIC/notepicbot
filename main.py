@@ -418,8 +418,8 @@ async def on_member_remove(member):
                 # Send DM
                 try:
                     await member.send(
-                        "You have been temporarily banned (30 days) from our server due to suspicious behavior: joining, accessing content, and leaving immediately.\n\n"
-                        "⚠️ Using our mods in YouTube videos, content, or any form of media without permission is STRICTLY PROHIBITED. Violation may lead to takedowns or legal strikes.\n\n"
+                        "You have been temporarily banned from our server due to suspicious behavior: joining, accessing content, and leaving immediately.\n\n"
+                        "Using our mods in YouTube videos, content, or any form of media is STRICTLY PROHIBITED. Violation may lead to takedowns or legal strikes.\n\n"
                         "If this was a mistake, you can appeal after the ban expires. Thank you."
                     )
                 except:
