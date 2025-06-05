@@ -388,7 +388,12 @@ async def on_app_command_error(interaction: discord.Interaction, error):
 
 @bot.event
 async def on_member_join(member):
-    user_activity[member.id] = {"joined": datetime.utcnow(), "got_role": False}
+    user_activity[member.id] = {"joined": datetime.utcnow(), "got_role": False
+    try:
+        await member.send("Thank you for joining the server!")
+        print(f"Sent welcome DM to {member}")
+    except Exception as e:
+        print(f"Failed to send DM: {e}")
 
 @bot.event
 async def on_member_update(before, after):
