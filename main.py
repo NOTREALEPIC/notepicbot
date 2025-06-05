@@ -49,7 +49,9 @@ statuses = [
     "Synchronizing with your worst nightmares."
 ]
 
-
+TARGET_ROLE_NAME = "LEGIT"
+BAN_DURATION_DAYS = 30
+TIME_LIMIT_MINUTES = 180
 
 user_activity = {}
 
