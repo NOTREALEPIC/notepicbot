@@ -278,19 +278,25 @@ async def proinfo_command(interaction: discord.Interaction, fid: str):
 
         data = pro_file_info[fid]
         
-        # Build the response (preserving all formatting)
-        response = (
-            f"{data.get('FIRST', '')}\n\n"
-            f"{data.get('SEC', '')}\n\n"
-            f"{data.get('THIRD', '')}\n\n"
-            f"{data.get('FOUR', '')}"
-        )
-
-        # Send as ephemeral (only visible to command user)
-        await interaction.response.send_message(
-            response,
-            ephemeral=True
-        )
+        # Build the full message
+        full_message = ""
+        for part in ['FIRST', 'SEC', 'THIRD', 'FOUR']:
+            if part in data and data[part]:
+                full_message += f"{data[part]}\n\n"
+        
+        # Smart splitting to avoid 2000 char limit
+        if len(full_message) <= 2000:
+            await interaction.response.send_message(full_message, ephemeral=True)
+        else:
+            # If too long, send as a text file
+            await interaction.response.send_message(
+                content="Here's the file info:",
+                ephemeral=True,
+                file=discord.File(
+                    io.StringIO(full_message),
+                    filename=f"{fid}_info.txt"
+                )
+            )
 
     except Exception as e:
         logging.error(f"Error in proinfo_command: {e}")
@@ -298,13 +304,6 @@ async def proinfo_command(interaction: discord.Interaction, fid: str):
             "⚠️ An error occurred while fetching file info!",
             ephemeral=True
         )
-
-@proinfo_command.error
-async def proinfo_error(interaction: discord.Interaction, error):
-    if isinstance(error, app_commands.errors.MissingRole):
-        await interaction.response.send_message("Access denied.", ephemeral=True)
-    else:
-        logging.error(f"Error in proinfo_command: {error}")
 
 
 
