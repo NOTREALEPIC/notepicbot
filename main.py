@@ -254,21 +254,21 @@ async def paid_id_error(interaction: discord.Interaction, error):
     description="Get info about paid files",
     guild=discord.Object(id=1232208366735196283)
 )
-@app_commands.checks.has_role("LEGIT")
-@app_commands.describe(fid="Enter the file or select from the list.")
+@app_commands.checks.has_role("LEGIT")  # Only LEGIT role can use
+@app_commands.describe(fid="Enter the file ID (select from list)")
 @app_commands.autocomplete(fid=fid_autocomplete)
-@app_commands.checks.cooldown(1, 10.0, key=lambda i: i.user.id)
 async def proinfo_command(interaction: discord.Interaction, fid: str):
     try:
-        # Check if in correct category
-        allowed_category_id = 1369408086967844924
-        if interaction.channel.category_id != allowed_category_id:
+        # Check if in correct category (REPLACE WITH YOUR CATEGORY ID)
+        REQUIRED_CATEGORY_ID = 1369408086967844924
+        if interaction.channel.category_id != REQUIRED_CATEGORY_ID:
             await interaction.response.send_message(
                 "❌ This command only works in the PROFILES category!",
                 ephemeral=True
             )
             return
 
+        # Check if file exists
         if fid not in pro_file_info:
             await interaction.response.send_message(
                 "❌ File not found in database!",
@@ -276,32 +276,32 @@ async def proinfo_command(interaction: discord.Interaction, fid: str):
             )
             return
 
+        # Get the file data
         data = pro_file_info[fid]
+
+        # Send each part sequentially but as separate messages
+        await interaction.response.defer(ephemeral=True)  # Initial defer
         
-        # Build the full message
-        full_message = ""
-        for part in ['FIRST', 'SEC', 'THIRD', 'FOUR']:
-            if part in data and data[part]:
-                full_message += f"{data[part]}\n\n"
+        # Send FIRST if exists
+        if 'FIRST' in data and data['FIRST']:
+            await interaction.followup.send(data['FIRST'], ephemeral=True)
         
-        # Smart splitting to avoid 2000 char limit
-        if len(full_message) <= 2000:
-            await interaction.response.send_message(full_message, ephemeral=True)
-        else:
-            # If too long, send as a text file
-            await interaction.response.send_message(
-                content="Here's the file info:",
-                ephemeral=True,
-                file=discord.File(
-                    io.StringIO(full_message),
-                    filename=f"{fid}_info.txt"
-                )
-            )
+        # Send SEC if exists
+        if 'SEC' in data and data['SEC']:
+            await interaction.followup.send(data['SEC'], ephemeral=True)
+        
+        # Send THIRD if exists
+        if 'THIRD' in data and data['THIRD']:
+            await interaction.followup.send(data['THIRD'], ephemeral=True)
+        
+        # Send FOUR if exists
+        if 'FOUR' in data and data['FOUR']:
+            await interaction.followup.send(data['FOUR'], ephemeral=True)
 
     except Exception as e:
-        logging.error(f"Error in proinfo_command: {e}")
-        await interaction.response.send_message(
-            "⚠️ An error occurred while fetching file info!",
+        logging.error(f"Error in /proinfo: {str(e)}")
+        await interaction.followup.send(
+            "⚠️ An error occurred while processing your request",
             ephemeral=True
         )
 
