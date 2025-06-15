@@ -260,30 +260,44 @@ async def paid_id_error(interaction: discord.Interaction, error):
 @app_commands.checks.cooldown(1, 10.0, key=lambda i: i.user.id)
 async def proinfo_command(interaction: discord.Interaction, fid: str):
     try:
-        allowed_category_id = 1369408086967844924  # Replace with your Category ID
+        # Check if in correct category
+        allowed_category_id = 1369408086967844924
         if interaction.channel.category_id != allowed_category_id:
-            await interaction.response.send_message("ONLY IN PROFILES CATEGORY", ephemeral=True)
+            await interaction.response.send_message(
+                "❌ This command only works in the PROFILES category!",
+                ephemeral=True
+            )
             return
 
         if fid not in pro_file_info:
-            await interaction.response.send_message("File not found.", ephemeral=True)
+            await interaction.response.send_message(
+                "❌ File not found in database!",
+                ephemeral=True
+            )
             return
 
         data = pro_file_info[fid]
+        
+        # Build the response (preserving all formatting)
+        response = (
+            f"{data.get('FIRST', '')}\n\n"
+            f"{data.get('SEC', '')}\n\n"
+            f"{data.get('THIRD', '')}\n\n"
+            f"{data.get('FOUR', '')}"
+        )
 
-        embed = Embed(title=f"INFO: {fid}", color=0x2ecc71)
-        embed.add_field(name="```|``` File name", value=f"```{fid}```", inline=False)
-        embed.add_field(name="```|``` Size", value=f"```{data['size']}```", inline=True)
-        embed.add_field(name="```|``` Version", value=f"```{data['version']}```", inline=True)
-        embed.add_field(name="```|``` FOR", value=f"```{data['for']}```", inline=True)
-        embed.add_field(name="```|``` Last update", value=f"```{data['last_update']}```", inline=True)
-        embed.add_field(name="```|``` Password", value=f"```{data['password']}```", inline=True)
-        embed.add_field(name="```|``` License", value=f"```{data['license']}```", inline=True)
-
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        # Send as ephemeral (only visible to command user)
+        await interaction.response.send_message(
+            response,
+            ephemeral=True
+        )
 
     except Exception as e:
         logging.error(f"Error in proinfo_command: {e}")
+        await interaction.response.send_message(
+            "⚠️ An error occurred while fetching file info!",
+            ephemeral=True
+        )
 
 @proinfo_command.error
 async def proinfo_error(interaction: discord.Interaction, error):
