@@ -284,19 +284,19 @@ async def proinfo_command(interaction: discord.Interaction, fid: str):
         
         # Send FIRST if exists
         if 'FIRST' in data and data['FIRST']:
-            await interaction.response.send_message(data['FIRST'], ephemeral=False)
+            await interaction.followup.send(data['FIRST'], ephemeral=False)
         
         # Send SEC if exists
         if 'SEC' in data and data['SEC']:
-            await interaction.response.send_message(data['SEC'], ephemeral=False)
+            await interaction.followup.send(data['SEC'], ephemeral=False)
         
         # Send THIRD if exists
         if 'THIRD' in data and data['THIRD']:
-            await interaction.response.send_message(data['THIRD'], ephemeral=False)
+            await interaction.followup.send(data['THIRD'], ephemeral=False)
         
         # Send FOUR if exists
         if 'FOUR' in data and data['FOUR']:
-            await interaction.response.send_message(data['FOUR'], ephemeral=False)
+            await interaction.followup.send(data['FOUR'], ephemeral=False)
 
     except Exception as e:
         logging.error(f"Error in /proinfo: {str(e)}")
