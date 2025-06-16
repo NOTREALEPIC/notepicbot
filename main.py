@@ -372,7 +372,48 @@ async def epicembed(
         logging.error(f"Error in /epicembed: {e}")
         await interaction.response.send_message("⚠️ Failed to send embed.", ephemeral=True)
 
+@tree.command(
+    name="paymentxx",
+    description="Send purchase confirmation to the ticket channel",
+    guilds=[discord.Object(id=1232208366735196283), discord.Object(id=1358758393300648126)]
+)
+@app_commands.describe(
+    channelid="Order ticket channel ID",
+    userid="User ID of the buyer",
+    spawncode="Spawn code of the buyer"
+)
+@app_commands.default_permissions(administrator=True)
+@app_commands.checks.has_role("ROOT")
+@app_commands.checks.cooldown(1, 10.0, key=lambda i: i.user.id)
+async def paymentxx(interaction: Interaction, channelid: str, userid: str, spawncode: str):
+    try:
+        target_channel = await interaction.client.fetch_channel(int(channelid))
+        buyer = await interaction.client.fetch_user(int(userid))
 
+        message = (
+            f"{buyer.mention}\n"
+            f"Thanks for your purchase! \n"
+            f"If you need support or future updates, please open a ticket in <#1240335393686290514>.\n"
+            f"Make sure to **mention your spawn code** (`{spawncode}`) clearly so we can assist you faster.\n\n"
+            f" You may now close this order ticket."
+        )
+
+        await target_channel.send(message)
+        await interaction.response.send_message("✅ Payment message sent successfully!", ephemeral=True)
+
+    except Exception as e:
+        logging.error(f"Error in /paymentxx command: {e}")
+        await interaction.response.send_message(f"❌ Failed to send message: {e}", ephemeral=True)
+
+@paymentxx.error
+async def paymentxx_error(interaction: Interaction, error):
+    if isinstance(error, app_commands.errors.MissingRole):
+        await interaction.response.send_message(
+            "Access denied. Verify in <#1233843778754838679> to continue.", ephemeral=True
+        )
+    else:
+        logging.error(f"Error in paymentxx: {error}")
+        await interaction.response.send_message("An error occurred while executing the command.", ephemeral=True)
 
 
 # ----------- Events -----------
