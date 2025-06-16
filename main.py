@@ -445,6 +445,8 @@ async def paymentxx_error(interaction: Interaction, error):
 @app_commands.checks.cooldown(1, 10.0, key=lambda i: i.user.id)
 async def warntt(interaction: Interaction, channelid: str, userid: str):
     try:
+        await interaction.response.defer(ephemeral=True)
+
         target_channel = await interaction.client.fetch_channel(int(channelid))
         buyer = await interaction.client.fetch_user(int(userid))
 
