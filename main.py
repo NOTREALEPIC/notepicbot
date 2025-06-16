@@ -3,6 +3,7 @@ import sys
 import time
 import random
 import logging
+from discord import app_commands, Interaction
 from datetime import datetime, timedelta
 from threading import Thread
 
