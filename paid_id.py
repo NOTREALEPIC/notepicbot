@@ -9,12 +9,13 @@ paid_id_data = {
         "Othr": "2546"
     },
     "epic0001": {
-        "Discord_id": "42424242424",
+        "Discord_id": "<@214719348458258433>",
         "File_Name": "EPIC_MC_PRO",
         "For_": "GTA 5",
-        "Date": "20-07-2024",
-        "Via": "WISE",
-        "Othr": "7562"
+        "Date": "16-06-2025",
+        "Via": "upi",
+        "Othr": "7562",
+        "Email": "vkhedkar08@gmail.com"
     },
     "epic0002": {
         "Discord_id": "42424242424",
