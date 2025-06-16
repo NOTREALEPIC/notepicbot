@@ -375,7 +375,7 @@ async def epicembed(
 
 @tree.command(
     name="paymentxx",
-    description="Send purchase confirmation to the ticket channel",
+    description="Send purchase confirmation to order ticket and DM",
     guilds=[discord.Object(id=1232208366735196283), discord.Object(id=1358758393300648126)]
 )
 @app_commands.describe(
@@ -383,8 +383,7 @@ async def epicembed(
     userid="User ID of the buyer",
     spawncode="Spawn code of the buyer"
 )
-@app_commands.default_permissions(administrator=True)
-@app_commands.checks.has_role("ROOT")
+@app_commands.checks.has_role("LEGIT")
 @app_commands.checks.cooldown(1, 10.0, key=lambda i: i.user.id)
 async def paymentxx(interaction: Interaction, channelid: str, userid: str, spawncode: str):
     try:
@@ -393,18 +392,32 @@ async def paymentxx(interaction: Interaction, channelid: str, userid: str, spawn
 
         message = (
             f"{buyer.mention}\n"
-            f"Thanks for your purchase! \n"
-            f"If you need support or future updates, please open a ticket in <#1240335393686290514>.\n"
+            f"Thanks for your purchase! 🛒\n"
+            f"If you need support or future updates, please open a ticket in <#1233843778754838679>.\n"
             f"Make sure to **mention your spawn code** (`{spawncode}`) clearly so we can assist you faster.\n\n"
-            f" You may now close this order ticket."
+            f"✅ You may now close this order ticket.\n"
+            f"— NOTTHEREALEPIC Team"
         )
 
+        # ✅ Send in ticket/order channel
         await target_channel.send(message)
-        await interaction.response.send_message("✅ Payment message sent successfully!", ephemeral=True)
+
+        # ✅ Send in user's DM
+        try:
+            await buyer.send(
+                f"✅ **Your purchase is confirmed!**\n\n{message.replace(buyer.mention, 'You')}"
+            )
+        except discord.Forbidden:
+            await interaction.followup.send(
+                f"⚠️ Could not DM the user ({buyer}) — maybe they have DMs off.",
+                ephemeral=True
+            )
+
+        await interaction.response.send_message("✅ Payment message sent to channel and DM!", ephemeral=True)
 
     except Exception as e:
-        logging.error(f"Error in /paymentxx command: {e}")
-        await interaction.response.send_message(f"❌ Failed to send message: {e}", ephemeral=True)
+        logging.error(f"Error in /paymentxx: {e}")
+        await interaction.response.send_message(f"❌ Error: {e}", ephemeral=True)
 
 @paymentxx.error
 async def paymentxx_error(interaction: Interaction, error):
@@ -415,7 +428,6 @@ async def paymentxx_error(interaction: Interaction, error):
     else:
         logging.error(f"Error in paymentxx: {error}")
         await interaction.response.send_message("An error occurred while executing the command.", ephemeral=True)
-
 
 # ----------- Events -----------
 
