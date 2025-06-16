@@ -234,7 +234,9 @@ async def paid_id_command(interaction: discord.Interaction, code: str):
         embed.add_field(name="```|``` FILE NAME", value=f"```{data['File_Name']}```", inline=False)
         embed.add_field(name="```|``` FOR", value=f"```{data['For_']}```", inline=True)
         embed.add_field(name="```|``` DATE", value=f"```{data['Date']}```", inline=True)
+        embed.add_field(name="```|``` EMAIL", value=f"```{data['Email']}```", inline=False)
         embed.add_field(name="```|``` PAYMENT VIA", value=f"```{data['Via']}```", inline=True)
+        embed.add_field(name="```|``` OTHER CODE", value=f"```{data['Othr']}```", inline=True)
 
         await interaction.edit_original_response(embed=embed)
 
