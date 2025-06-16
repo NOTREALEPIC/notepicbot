@@ -392,10 +392,10 @@ async def paymentxx(interaction: Interaction, channelid: str, userid: str, spawn
 
         message = (
             f"{buyer.mention}\n"
-            f"Thanks for your purchase! 🛒\n"
-            f"If you need support or future updates, please open a ticket in <#1233843778754838679>.\n"
+            f"Thanks for your purchase! \n"
+            f"If you need support or future updates, please open a ticket in <#1240335393686290514>.\n"
             f"Make sure to **mention your spawn code** (`{spawncode}`) clearly so we can assist you faster.\n\n"
-            f"✅ You may now close this order ticket.\n"
+            f"You may now close this order ticket.\n"
             f"— NOTTHEREALEPIC Team"
         )
 
