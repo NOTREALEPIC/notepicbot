@@ -383,7 +383,8 @@ async def epicembed(
     userid="User ID of the buyer",
     spawncode="Spawn code of the buyer"
 )
-@app_commands.checks.has_role("LEGIT")
+@app_commands.default_permissions(administrator=True)
+@app_commands.checks.has_role("ROOT")
 @app_commands.checks.cooldown(1, 10.0, key=lambda i: i.user.id)
 async def paymentxx(interaction: Interaction, channelid: str, userid: str, spawncode: str):
     try:
@@ -427,6 +428,70 @@ async def paymentxx_error(interaction: Interaction, error):
         )
     else:
         logging.error(f"Error in paymentxx: {error}")
+        await interaction.response.send_message("An error occurred while executing the command.", ephemeral=True)
+
+
+@tree.command(
+    name="warntt",
+    description="Send purchase confirmation to order ticket and DM",
+    guilds=[discord.Object(id=1232208366735196283), discord.Object(id=1358758393300648126)]
+)
+@app_commands.describe(
+    channelid="Order ticket channel ID",
+    userid="User ID of the buyer"
+)
+@app_commands.default_permissions(administrator=True)
+@app_commands.checks.has_role("ROOT")
+@app_commands.checks.cooldown(1, 10.0, key=lambda i: i.user.id)
+async def warntt(interaction: Interaction, channelid: str, userid: str):
+    try:
+        target_channel = await interaction.client.fetch_channel(int(channelid))
+        buyer = await interaction.client.fetch_user(int(userid))
+
+        message = (
+            f"## Ticket Inactivity Warning\n"
+            f"Hy {buyer.mention}! \n"
+            f"This ticket will automatically close if there is no response within the next 3 hours. \n"
+            f"If you still need help, please reply here to keep the ticket open."
+            f"If your issue is resolved, feel free to close the ticket using the appropriate button or command.\n\n"
+            f"Thank you for understanding!\n"
+            f"— NOTTHEREALEPIC Team"
+        )
+
+        # ✅ Send in ticket/order channel
+        await target_channel.send(message)
+
+        # ✅ Send in user's DM
+        try:
+            await buyer.send(
+                f"## Ticket Inactivity Warning\n"
+                f"Hy {buyer.mention}! \n"
+                f"This ticket will automatically close if there is no response within the next 3 hours. \n"
+                f"If you still need help, please reply here to keep the ticket open."
+                f"If your issue is resolved, feel free to close the ticket using the appropriate button or command.\n\n"
+                f"Thank you for understanding!\n"
+                f"— NOTTHEREALEPIC Team"
+            )
+        except discord.Forbidden:
+            await interaction.followup.send(
+                f"⚠️ Could not DM the user ({buyer}) — maybe they have DMs off.",
+                ephemeral=True
+            )
+
+        await interaction.response.send_message("✅ warn message sent to channel and DM!", ephemeral=True)
+
+    except Exception as e:
+        logging.error(f"Error in /warntt: {e}")
+        await interaction.response.send_message(f"❌ Error: {e}", ephemeral=True)
+
+@warntt.error
+async def warntt_error(interaction: Interaction, error):
+    if isinstance(error, app_commands.errors.MissingRole):
+        await interaction.response.send_message(
+            "Access denied. Verify in <#1233843778754838679> to continue.", ephemeral=True
+        )
+    else:
+        logging.error(f"Error in warntt: {error}")
         await interaction.response.send_message("An error occurred while executing the command.", ephemeral=True)
 
 # ----------- Events -----------
