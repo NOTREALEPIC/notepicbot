@@ -3,6 +3,9 @@ import sys
 import time
 import random
 import logging
+import re
+import unicodedata
+from collections import defaultdict
 from discord import app_commands, Interaction
 from datetime import datetime, timedelta
 from threading import Thread
@@ -54,6 +57,17 @@ user_activity = {}
 TARGET_ROLE_NAME = "LEGIT"
 BAN_DURATION_DAYS = 30
 TIME_LIMIT_MINUTES = 180
+
+user_message_tracker = defaultdict(list)
+
+def normalize_text(text):
+    return unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii').lower()
+
+# Flagged keywords
+bad_words = [
+    "free nitro", "free nude", "free nsfw", "nude", "fuck", "sex", "onlyfans",
+    "private video", "click here", "join now", "snapchat nude"
+]
 
 
 
@@ -497,6 +511,53 @@ async def warntt_error(interaction: Interaction, error):
         await interaction.response.send_message("An error occurred while executing the command.", ephemeral=True)
 
 # ----------- Events -----------
+
+
+@bot.event
+async def on_message(message):
+    if message.author.bot:
+        return
+
+    now = datetime.utcnow()
+    norm_content = normalize_text(message.content)
+
+    # Track per-user message data
+    user_id = message.author.id
+    user_message_tracker[user_id].append((norm_content, now, message.guild.id))
+
+    # Keep only recent messages (last 10 mins)
+    user_message_tracker[user_id] = [
+        (msg, t, gid) for msg, t, gid in user_message_tracker[user_id]
+        if now - t < timedelta(minutes=10)
+    ]
+
+    # Multi-server spam check
+    same_msg_count = sum(1 for msg, _, _ in user_message_tracker[user_id] if msg == norm_content)
+    unique_guilds = {gid for msg, _, gid in user_message_tracker[user_id] if msg == norm_content}
+
+    # Condition 1: Same message in 5+ servers in 10 minutes
+    if len(unique_guilds) >= 5:
+        try:
+            await message.delete()
+            await message.author.timeout(timedelta(hours=24), reason="⚠️ Multi-server spam")
+            print(f"⛔ {message.author} timed out for multi-server spam.")
+        except Exception as e:
+            print(f"Error: {e}")
+        return
+
+    # Condition 2 & 3: NSFW keyword detection in any font
+    if any(word in norm_content for word in bad_words):
+        try:
+            await message.delete()
+            await message.author.timeout(timedelta(hours=12), reason="⚠️ NSFW/Scam content")
+            print(f"⚠️ {message.author} timed out for NSFW word.")
+        except Exception as e:
+            print(f"Error: {e}")
+        return
+
+    await bot.process_commands(message)
+
+
 
 @bot.event
 async def on_ready():
