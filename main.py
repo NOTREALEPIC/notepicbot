@@ -80,7 +80,34 @@ bad_words = [
 
     # Obvious bait / triggers
     "@everyone free", "@here get", ":gift:", ":tada:", ":gem:", ":moneybag:",
-    "u.to/", "bit.ly/", "tinyurl.com/", "rb.gy/", "t.co/", "gg.gg/"
+    "u.to/", "bit.ly/", "tinyurl.com/", "rb.gy/", "t.co/", "gg.gg/",
+    "discord-",          # e.g. discord-airdrop.com
+    "discordnitro.",     # e.g. discordnitro.gift
+    "discord.giveaway",  # e.g. discord.giveawayevent.site
+    "discordgift.",      # e.g. discordgift.codes
+    "d1scord.",          # typo style
+    "discorcl.",         # fake 'L' instead of 'd'
+
+    "steamcommunity-",   # e.g. steamcommunity-offer.site
+    "steamgift.",        # e.g. steamgiftdrop.com
+    "steampowered-",     # e.g. steampowered-bonus.net
+    "steamdrop.",        # e.g. steamdrop.shop
+    "steamn1tro.",       # steam with nitro bait
+
+    "epicgames-",        # e.g. epicgames-prize.store
+    "epic-drop.",        # e.g. epic-drop.gg
+
+    "roblox-",           # e.g. roblox-reward.tk
+    "fortnite-",         # e.g. fortnite-code.online
+    "valorant-",         # e.g. valorant-points.click
+
+    "nitro-",            # nitro-gift.xyz
+    "nitr0-",            # using zero
+    "airdrop-",          # airdrop-nitro.store
+    "verify-",           # verify-nitro.link
+    "login-",            # login-steam.xyz
+    "secure-",           # secure-discordlogin.com
+    "giveaway-",         # giveaway-discord.tech
 ]
 
 
