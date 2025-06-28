@@ -63,10 +63,24 @@ user_message_tracker = defaultdict(list)
 def normalize_text(text):
     return unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('ascii').lower()
 
-# Flagged keywords
 bad_words = [
+    # NSFW and explicit
     "free nitro", "free nude", "free nsfw", "nude", "fuck", "sex", "onlyfans",
-    "private video", "click here", "join now", "snapchat nude"
+    "private video", "click here", "join now", "snapchat nude",
+
+    # Game & giveaway scams (refined to avoid false positives)
+    "free steam", "steam giveaway", "steam gift", "free robux", "free vbucks",
+    "free uc", "nitro drop", "claim nitro", "steam drop", "roblox code",
+    "fortnite free", "cod points free", "valorant points free", "valorant free skin",
+
+    # Suspicious domains / shortened URLs
+    "discordnitro", "discord-airdrop", "steamcommunity", "steampowered",
+    "nft-airdrop", "airdrop claim", "verify here", "free-key", "account-free",
+    "giveaway-bot", "nitro-bot", "claim gift", "verify to claim",
+
+    # Obvious bait / triggers
+    "@everyone free", "@here get", ":gift:", ":tada:", ":gem:", ":moneybag:",
+    "u.to/", "bit.ly/", "tinyurl.com/", "rb.gy/", "t.co/", "gg.gg/"
 ]
 
 
