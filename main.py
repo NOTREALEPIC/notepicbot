@@ -676,8 +676,7 @@ app = Flask("")
 
 @app.route("/")
 def home():
-    return "Bot is alive!"
-
+    return send_from_directory("static", "bot_status.html")
 def run_flask():
     app.run(host="0.0.0.0", port=8080)
 
