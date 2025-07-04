@@ -32,26 +32,36 @@ logging.basicConfig(
 
 
 statuses = [
-    "Orchestrating silent backend chaos.",
-    "Playing with forbidden syscalls.",
-    "Exploiting glitches for science.",
-    "Refactoring the matrix, one bug at a time.",
-    "Executing covert backend maneuvers.",
-    "Tuning servers to borderline insanity.",
-    "Harvesting logs like a shadow gardener.",
-    "Playing chess with corrupted data.",
-    "Compiling secrets under NDA.",
-    "Automating the art of subtle sabotage.",
-    "Running dirty scripts professionally.",
-    "Silent guardian of digital entropy.",
-    "Injecting controlled chaos discreetly.",
-    "Playing with firewalls like a pyromaniac.",
-    "Hijacking processes with surgical precision.",
-    "Operating in the backend black market.",
-    "Refining errors into features.",
-    "Testing exploits with clinical detachment.",
-    "Playing behind the scenes — no witnesses.",
-    "Synchronizing with your worst nightmares."
+    "Playing GTA 6 — don't ask.",
+    "Modding GTA like it's a career.",
+    "ZModeler: cracked, patched, broken again.",
+    "Scripting when I feel like it.",
+    "Helping, but not politely.",
+    "Banning you next, probably.",
+    "Still fixing mods I didn’t break.",
+    "GTA physics? Not my fault.",
+    "Running Discord like a back alley shop.",
+    "Support open — patience closed.",
+    "ZModeler and I have beef.",
+    "If it's broken, blame the dev.",
+    "Custom cars, broken dreams.",
+    "GTA garage — open, underpaid.",
+    "Debugging one crash at a time.",
+    "Reading logs like tarot cards.",
+    "Updates? Maybe. Attitude? Always.",
+    "Discord mod — not your therapist.",
+    "This isn't a helpdesk. Kind of is.",
+    "Yes, I’m Batman. No, I won’t fix it.",
+    "Fixing what Rockstar couldn’t.",
+    "No promises. Only patches.",
+    "Your bug, my weekend.",
+    "Helping people I lowkey dislike.",
+    "I mod. I ban. I vanish.",
+    "Welcome to tech support, now cry.",
+    "5M server? Depends on my mood.",
+    "Writing code that probably works.",
+    "Lurking in logs, judging silently.",
+    "Less talk, more fixing.",
 ]
 
 user_activity = {}
@@ -611,10 +621,13 @@ async def on_ready():
         logging.info(f"Synced {len(synced)} commands.")
     except Exception as e:
         logging.error(f"Error syncing commands: {e}")
+    change_status.start()
+
+@tasks.loop(seconds=30)  
+async def change_status():
     chosen_status = random.choice(statuses)
     activity = discord.Activity(type=discord.ActivityType.playing, name=chosen_status)
     await bot.change_presence(status=discord.Status.online, activity=activity)
-
 
 @bot.event
 async def on_app_command_error(interaction: discord.Interaction, error):
