@@ -562,6 +562,44 @@ async def warntt_error(interaction: Interaction, error):
         logging.error(f"Error in warntt: {error}")
         await interaction.response.send_message("An error occurred while executing the command.", ephemeral=True)
 
+
+@tasks.loop(seconds=50)
+async def update_uptime_embed():
+    try:
+        channel = bot.get_channel(1391327447764435005)
+        if not channel:
+            logging.warning("⚠️ Uptime channel not found.")
+            return
+
+        message = await channel.fetch_message(1391327711926157463)
+        if not message:
+            logging.warning("⚠️ Uptime message not found.")
+            return
+
+        now_utc = datetime.utcnow()
+        now_ist = now_utc + timedelta(hours=5, minutes=30)
+        uptime = now_utc - start_time
+
+        days, rem = divmod(int(uptime.total_seconds()), 86400)
+        hours, rem = divmod(rem, 3600)
+        minutes, seconds = divmod(rem, 60)
+        uptime_str = f"{days:02}:{hours:02}:{minutes:02}:{seconds:02}"
+
+        embed = discord.Embed(
+            title="NOTTHEREALEPIC BOT",
+            color=discord.Color.green()
+        )
+        embed.add_field(name="STATUS", value="```ONLINE```", inline=True)
+        embed.add_field(name="START", value=f"```{start_time + timedelta(hours=5, minutes=30):%I:%M %p} IST```", inline=True)
+        embed.add_field(name="UPTIME", value=f"```{uptime_str}```", inline=True)
+        embed.add_field(name="LAST UPDATED", value=f"```{now_ist:%H:%M:%S} IST```", inline=True)
+        embed.set_footer(text="Auto-updated every 50s")
+
+        await message.edit(embed=embed)
+
+    except Exception as e:
+        logging.error(f"⚠️ Failed to update uptime embed: {e}")
+
 # ----------- Events -----------
 
 
@@ -622,6 +660,7 @@ async def on_ready():
     except Exception as e:
         logging.error(f"Error syncing commands: {e}")
     change_status.start()
+    update_uptime_embed.start()
 
 @tasks.loop(seconds=30)  
 async def change_status():
