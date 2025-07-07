@@ -600,7 +600,7 @@ async def update_uptime_embed():
     except Exception as e:
         logging.error(f"⚠️ Failed to update uptime embed: {e}")
 
-# Admin or "ROOT"/"MOD" role check
+# ✅ Role/admin check
 def is_admin_or_mod(interaction: discord.Interaction):
     if interaction.user.guild_permissions.administrator:
         return True
@@ -608,27 +608,29 @@ def is_admin_or_mod(interaction: discord.Interaction):
     user_roles = [role.name.upper() for role in interaction.user.roles]
     return any(role in user_roles for role in allowed_roles)
 
+# ✅ Slash command: /dm
 @bot.tree.command(
     name="dm",
-    description="Send a DM to a user by user ID (admin/mod only)"
+    description="Send a DM to a user by their ID",
+    guilds=[discord.Object(id=1232208366735196283)]  # <-- your server ID here
 )
 @app_commands.check(is_admin_or_mod)
-@app_commands.describe(userid="User ID to DM", message="Message to send (use \\n for new lines)")
-async def dm_user(interaction: discord.Interaction, userid: str, message: str):
+@app_commands.describe(userid="User ID to DM", message="Message (use \\n for newlines)")
+async def dm(interaction: discord.Interaction, userid: str, message: str):
     await interaction.response.defer(ephemeral=True)
     try:
         user = await bot.fetch_user(int(userid))
-        formatted_msg = message.replace("\\n", "\n")
-        await user.send(formatted_msg)
+        text = message.replace("\\n", "\n")
+        await user.send(text)
         await interaction.followup.send(f"✅ DM sent to <@{userid}>.")
     except Exception as e:
-        await interaction.followup.send(f"❌ Failed to send DM: `{e}`")
+        await interaction.followup.send(f"❌ Failed: `{e}`")
 
-# Handle permission error
-@dm_user.error
-async def dm_user_error(interaction: discord.Interaction, error):
+# ✅ Error handler
+@dm.error
+async def dm_error(interaction: discord.Interaction, error):
     if isinstance(error, app_commands.CheckFailure):
-        await interaction.response.send_message("❌ You don’t have permission to use this command.", ephemeral=True)
+        await interaction.response.send_message("❌ You don't have permission.", ephemeral=True)
 
 # ----------- Events -----------
 
