@@ -18,12 +18,13 @@ paid_id_data = {
         "Email": "vkhedkar08@gmail.com"
     },
     "epic0002": {
-        "Discord_id": "42424242424",
+        "Discord_id": "<@1384974271134040134>",
         "File_Name": "EPIC_MC_PRO",
         "For_": "GTA 5",
-        "Date": "20-07-2024",
-        "Via": "WISE",
-        "Othr": "4827"
+        "Date": "10-07-2025",
+        "Via": "GIVEAWAY",
+        "Othr": "4827",
+        "Email": "slaktonbucket@gmail.com"
     },
     "epic0003": {
         "Discord_id": "42424242424",
