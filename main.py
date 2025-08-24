@@ -9,12 +9,10 @@ from instagrapi.exceptions import ChallengeRequired, LoginRequired
 app = Flask(__name__)
 
 # --- Configuration ---
-# These are now just constants; the actual user/pass will come from the web form.
 TARGET_ACCOUNT = "nasa"
 MAX_ACTIONS = 5
 
 # This will hold the client session for a user.
-# In a real multi-user app, you'd manage this differently (e.g., with user sessions).
 cl = None
 
 # --- Helper Functions for saving the list of followed users ---
@@ -55,7 +53,6 @@ def run_bot():
         return jsonify({"success": True, "message": "Login successful! Starting bot actions..."})
         
     except ChallengeRequired:
-        # If 2FA is needed, tell the front-end to ask for the code.
         return jsonify({
             "success": False, 
             "challenge_required": True, 
@@ -86,7 +83,7 @@ def verify_challenge():
 
 @app.route('/start-actions')
 def start_actions():
-    """This is a special 'streaming' route that runs the bot's follow logic
+    """This 'streaming' route runs the bot's follow logic
        and sends live updates back to the webpage's console."""
     def generate_logs():
         global cl
@@ -120,7 +117,7 @@ def start_actions():
                     yield f"data:   ✅ Successfully followed {user_name}!\n\n"
                     followed_user_ids.append(user_id)
                     
-                    delay = 5 # Keep delay short for testing
+                    delay = 5
                     yield f"data:      ... Waiting for {delay} seconds...\n\n"
                     time.sleep(delay)
                 except Exception as e:
@@ -134,3 +131,6 @@ def start_actions():
             yield f"data: AN UNEXPECTED ERROR OCCURRED: {e}\n\n"
 
     return Response(generate_logs(), mimetype='text/event-stream')
+
+# NOTE: The if __name__ == '__main__': block has been REMOVED.
+# Gunicorn will be used to run the app in production.
