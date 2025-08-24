@@ -141,5 +141,129 @@
             }
         });
     </script>
+        <!-- ... (The rest of your HTML body is fine) ... -->
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get all the HTML elements we need to interact with
+            const loginSection = document.getElementById('login-section');
+            const loginForm = document.getElementById('login-form');
+            const challengeSection = document.getElementById('challenge-section');
+            const challengeForm = document.getElementById('challenge-form');
+            const consoleLog = document.getElementById('console-log');
+            const challengeMessage = document.getElementById('challenge-message');
+            
+            // This variable will hold the username after the first step
+            let currentUsername = '';
+
+            // A helper function to print messages to our web console
+            function logToConsole(message) {
+                // Sanitize the message to prevent HTML injection issues
+                const sanitizedMessage = message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                consoleLog.innerHTML += `\n&gt; ${sanitizedMessage}`;
+                // Automatically scroll to the latest message
+                consoleLog.scrollTop = consoleLog.scrollHeight;
+            }
+
+            // --- Event Listener for the Login Form ---
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault(); // Prevent the page from reloading
+                
+                const usernameInput = document.getElementById('username');
+                const passwordInput = document.getElementById('password');
+                
+                currentUsername = usernameInput.value;
+                const password = passwordInput.value;
+                
+                logToConsole("Attempting login...");
+                
+                try {
+                    const response = await fetch('/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ username: currentUsername, password: password })
+                    });
+
+                    // We need to check if the server responded with an error (like 500)
+                    if (!response.ok) {
+                        logToConsole(`ERROR: Server responded with status ${response.status}. Check Render logs.`);
+                        const errorText = await response.text();
+                        logToConsole(`Server message: ${errorText}`);
+                        return;
+                    }
+
+                    const result = await response.json(); // Get the JSON data from the server
+
+                    if (result.success) {
+                        logToConsole(result.message);
+                        loginSection.classList.add('d-none'); // Hide login form
+                        startEventSource(); // Start the bot actions
+                    } else if (result.challenge_required) {
+                        logToConsole(result.message);
+                        challengeMessage.textContent = result.message;
+                        loginSection.classList.add('d-none'); // Hide login form
+                        challengeSection.classList.remove('d-none'); // SHOW THE 2FA FORM
+                    } else {
+                        logToConsole(`ERROR: ${result.error}`);
+                    }
+                } catch (error) {
+                    logToConsole(`A critical network error occurred: ${error}. Cannot connect to the server.`);
+                }
+            });
+
+            // --- Event Listener for the 2FA Code Form ---
+            challengeForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const codeInput = document.getElementById('code');
+                const code = codeInput.value;
+
+                logToConsole(`Submitting verification code...`);
+                
+                try {
+                    const response = await fetch('/verify', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code: code, username: currentUsername })
+                    });
+                    
+                    if (!response.ok) {
+                        logToConsole(`ERROR: Server responded with status ${response.status}.`);
+                        return;
+                    }
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        logToConsole(result.message);
+                        challengeSection.classList.add('d-none'); // Hide 2FA form
+                        startEventSource(); // Start the bot actions
+                    } else {
+                        logToConsole(`ERROR: ${result.error}`);
+                    }
+                } catch (error) {
+                    logToConsole(`A critical network error occurred: ${error}.`);
+                }
+            });
+
+            // --- Function to start listening for live logs ---
+            function startEventSource() {
+                const eventSource = new EventSource('/start-bot-actions');
+                logToConsole("Connection established. Waiting for bot logs...");
+                
+                eventSource.onmessage = (event) => {
+                    logToConsole(event.data);
+                    if (event.data.includes("BOT FINISHED")) {
+                        eventSource.close();
+                        logToConsole("Connection closed by server.");
+                    }
+                };
+                
+                eventSource.onerror = (err) => {
+                    logToConsole("Connection error. The process may have finished or timed out.");
+                    eventSource.close();
+                };
+            }
+        });
+    </script>
 </body>
 </html>
