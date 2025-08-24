@@ -12,12 +12,11 @@ app = Flask(__name__)
 TARGET_ACCOUNT = "nasa"
 MAX_ACTIONS = 5
 
-# This will hold the client session for a user.
+# This will hold the client session for a user during the login process.
 cl = None
 
-# --- Helper Functions for saving the list of followed users ---
+# --- Helper Function (no changes) ---
 def save_followed_users(username, user_list):
-    """Saves the list of followed users to a file named after the user."""
     with open(f"{username}_followed_users.json", 'w') as f:
         json.dump(user_list, f)
 
@@ -28,9 +27,9 @@ def index():
     """Serves the main HTML user interface."""
     return render_template('index.html')
 
-@app.route('/run-bot', methods=['POST'])
-def run_bot():
-    """Receives login credentials from the web form and attempts to log in."""
+@app.route('/login', methods=['POST'])
+def login():
+    """Receives login credentials from the web UI and attempts to log in."""
     global cl
     data = request.get_json()
     username = data.get('username')
@@ -56,16 +55,16 @@ def run_bot():
         return jsonify({
             "success": False, 
             "challenge_required": True, 
-            "message": "Two-factor authentication required. Please enter the 6-digit code."
+            "message": "Two-factor authentication required. Please enter the code sent to your email."
         })
     except LoginRequired:
-        return jsonify({"error": "Login failed. Please check your username and password."}), 401
+        return jsonify({"error": "Login failed. Please check credentials."}), 401
     except Exception as e:
         return jsonify({"error": f"An unexpected login error occurred: {e}"}), 500
 
-@app.route('/verify-challenge', methods=['POST'])
-def verify_challenge():
-    """Receives the 2FA code from the web form and verifies it."""
+@app.route('/verify', methods=['POST'])
+def verify():
+    """Receives the 2FA code from the web UI and verifies it."""
     global cl
     data = request.get_json()
     code = data.get('code')
@@ -81,30 +80,26 @@ def verify_challenge():
     except Exception as e:
         return jsonify({"error": f"Verification failed: {e}"}), 400
 
-@app.route('/start-actions')
-def start_actions():
-    """This 'streaming' route runs the bot's follow logic
-       and sends live updates back to the webpage's console."""
+@app.route('/start-bot-actions')
+def start_bot_actions():
+    """This 'streaming' route runs the bot's logic and sends live log updates."""
     def generate_logs():
         global cl
         if not cl or not cl.user_id:
-            yield "data: ERROR: Not logged in. Please refresh and try again.\n\n"
+            yield "data: ERROR: Not logged in. Please start over.\n\n"
             return
 
         try:
             username = cl.username
-            yield f"data: ✅ Login successful for {username}!\n\n"
+            yield f"data: ✅ Logged in as {username}!\n\n"
             time.sleep(1)
 
             yield f"data: --- Starting to Follow Users ---\n\n"
-            time.sleep(1)
-            
-            yield f"data: Finding target account '{TARGET_ACCOUNT}'...\n\n"
+            yield f"data: Finding target: '{TARGET_ACCOUNT}'...\n\n"
             target_user_id = cl.user_id_from_username(TARGET_ACCOUNT)
             yield f"data: Found! User ID is {target_user_id}\n\n"
-            time.sleep(1)
-
-            yield f"data: Fetching followers of '{TARGET_ACCOUNT}'...\n\n"
+            
+            yield f"data: Fetching followers...\n\n"
             followers = cl.user_followers_v1(target_user_id, amount=MAX_ACTIONS)
             
             followed_user_ids = []
@@ -112,25 +107,19 @@ def start_actions():
                 try:
                     user_id = user.pk
                     user_name = user.username
-                    yield f"data:   -> Attempting to follow: {user_name} (ID: {user_id})\n\n"
+                    yield f"data:   -> Following: {user_name}\n\n"
                     cl.user_follow(user_id)
-                    yield f"data:   ✅ Successfully followed {user_name}!\n\n"
+                    yield f"data:   ✅ Success!\n\n"
                     followed_user_ids.append(user_id)
-                    
-                    delay = 5
-                    yield f"data:      ... Waiting for {delay} seconds...\n\n"
-                    time.sleep(delay)
+                    time.sleep(5)
                 except Exception as e:
                     yield f"data:   ❌ Could not follow. Reason: {e}\n\n"
             
             save_followed_users(username, followed_user_ids)
             yield f"data: --- Finished following {len(followed_user_ids)} users. ---\n\n"
-            yield f"data: BOT FINISHED. You can close this page.\n\n"
+            yield f"data: BOT FINISHED.\n\n"
 
         except Exception as e:
             yield f"data: AN UNEXPECTED ERROR OCCURRED: {e}\n\n"
 
     return Response(generate_logs(), mimetype='text/event-stream')
-
-# NOTE: The if __name__ == '__main__': block has been REMOVED.
-# Gunicorn will be used to run the app in production.
