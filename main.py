@@ -1,95 +1,136 @@
-from flask import Flask, render_template_string, request
+import os
+import time
+import json
+from flask import Flask, render_template, request, jsonify, Response
 from instagrapi import Client
-import os, time, json
+from instagrapi.exceptions import ChallengeRequired, LoginRequired
 
+# --- Flask App Initialization ---
 app = Flask(__name__)
 
-# Simple HTML template with username/password form and a console box
-HTML_TEMPLATE = """
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Instagram Bot UI</title>
-  <style>
-    body { font-family: monospace; background: #111; color: #0f0; padding: 20px; }
-    .console { background: black; padding: 15px; height: 400px; overflow-y: scroll; border: 1px solid #0f0; }
-    input { padding: 6px; margin: 6px; }
-    button { padding: 8px; }
-  </style>
-</head>
-<body>
-  <h2>Instagram Follow/Unfollow Bot</h2>
-  <form method="post">
-    <input type="text" name="username" placeholder="Username" required><br>
-    <input type="password" name="password" placeholder="Password" required><br>
-    <button type="submit">Run Bot</button>
-  </form>
+# --- Configuration ---
+# These are now just constants; the actual user/pass will come from the web form.
+TARGET_ACCOUNT = "nasa"
+MAX_ACTIONS = 5
 
-  {% if logs %}
-  <h3>Console Output</h3>
-  <div class="console">
-    {% for line in logs %}
-      {{line}}<br>
-    {% endfor %}
-  </div>
-  {% endif %}
-</body>
-</html>
-"""
+# This will hold the client session for a user.
+# In a real multi-user app, you'd manage this differently (e.g., with user sessions).
+cl = None
 
-# Helper: save/load user ids
-FOLLOWED_USERS_FILE = "followed_users.json"
-def save_followed_users(user_list):
-    with open(FOLLOWED_USERS_FILE, 'w') as f:
+# --- Helper Functions for saving the list of followed users ---
+def save_followed_users(username, user_list):
+    """Saves the list of followed users to a file named after the user."""
+    with open(f"{username}_followed_users.json", 'w') as f:
         json.dump(user_list, f)
 
-def load_followed_users():
-    if not os.path.exists(FOLLOWED_USERS_FILE):
-        return []
-    try:
-        with open(FOLLOWED_USERS_FILE, 'r') as f:
-            return json.load(f)
-    except:
-        return []
+# --- Web Routes ---
 
-@app.route("/", methods=["GET", "POST"])
+@app.route('/')
 def index():
-    logs = []
-    if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+    """Serves the main HTML user interface."""
+    return render_template('index.html')
 
-        cl = Client()
-        try:
-            logs.append(f"Logging in as {username}...")
+@app.route('/run-bot', methods=['POST'])
+def run_bot():
+    """Receives login credentials from the web form and attempts to log in."""
+    global cl
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({"error": "Username and password are required."}), 400
+    
+    cl = Client()
+    session_file = f"{username}.json"
+    
+    try:
+        if os.path.exists(session_file):
+            cl.load_settings(session_file)
             cl.login(username, password)
-            logs.append("✅ Login successful!")
+        else:
+            cl.login(username, password)
+        
+        cl.dump_settings(session_file)
+        return jsonify({"success": True, "message": "Login successful! Starting bot actions..."})
+        
+    except ChallengeRequired:
+        # If 2FA is needed, tell the front-end to ask for the code.
+        return jsonify({
+            "success": False, 
+            "challenge_required": True, 
+            "message": "Two-factor authentication required. Please enter the 6-digit code."
+        })
+    except LoginRequired:
+        return jsonify({"error": "Login failed. Please check your username and password."}), 401
+    except Exception as e:
+        return jsonify({"error": f"An unexpected login error occurred: {e}"}), 500
 
-            target = "nasa"
-            max_actions = 3
-            logs.append(f"Fetching followers of {target}...")
+@app.route('/verify-challenge', methods=['POST'])
+def verify_challenge():
+    """Receives the 2FA code from the web form and verifies it."""
+    global cl
+    data = request.get_json()
+    code = data.get('code')
+    username = data.get('username')
 
-            user_id = cl.user_id_from_username(target)
-            followers = cl.user_followers_v1(user_id, amount=max_actions)
+    if not code:
+        return jsonify({"error": "Verification code is required."}), 400
+    
+    try:
+        cl.challenge_code(code)
+        cl.dump_settings(f"{username}.json")
+        return jsonify({"success": True, "message": "Verification successful! Starting bot actions..."})
+    except Exception as e:
+        return jsonify({"error": f"Verification failed: {e}"}), 400
 
-            followed = []
+@app.route('/start-actions')
+def start_actions():
+    """This is a special 'streaming' route that runs the bot's follow logic
+       and sends live updates back to the webpage's console."""
+    def generate_logs():
+        global cl
+        if not cl or not cl.user_id:
+            yield "data: ERROR: Not logged in. Please refresh and try again.\n\n"
+            return
+
+        try:
+            username = cl.username
+            yield f"data: ✅ Login successful for {username}!\n\n"
+            time.sleep(1)
+
+            yield f"data: --- Starting to Follow Users ---\n\n"
+            time.sleep(1)
+            
+            yield f"data: Finding target account '{TARGET_ACCOUNT}'...\n\n"
+            target_user_id = cl.user_id_from_username(TARGET_ACCOUNT)
+            yield f"data: Found! User ID is {target_user_id}\n\n"
+            time.sleep(1)
+
+            yield f"data: Fetching followers of '{TARGET_ACCOUNT}'...\n\n"
+            followers = cl.user_followers_v1(target_user_id, amount=MAX_ACTIONS)
+            
+            followed_user_ids = []
             for user in followers:
                 try:
-                    logs.append(f"Following {user.username}...")
-                    cl.user_follow(user.pk)
-                    followed.append(user.pk)
-                    time.sleep(3)
-                    logs.append(f"✅ Followed {user.username}")
+                    user_id = user.pk
+                    user_name = user.username
+                    yield f"data:   -> Attempting to follow: {user_name} (ID: {user_id})\n\n"
+                    cl.user_follow(user_id)
+                    yield f"data:   ✅ Successfully followed {user_name}!\n\n"
+                    followed_user_ids.append(user_id)
+                    
+                    delay = 5 # Keep delay short for testing
+                    yield f"data:      ... Waiting for {delay} seconds...\n\n"
+                    time.sleep(delay)
                 except Exception as e:
-                    logs.append(f"❌ Error following {user.username}: {e}")
-
-            save_followed_users(followed)
-            logs.append("Done! Followed users saved.")
+                    yield f"data:   ❌ Could not follow. Reason: {e}\n\n"
+            
+            save_followed_users(username, followed_user_ids)
+            yield f"data: --- Finished following {len(followed_user_ids)} users. ---\n\n"
+            yield f"data: BOT FINISHED. You can close this page.\n\n"
 
         except Exception as e:
-            logs.append(f"ERROR: {e}")
+            yield f"data: AN UNEXPECTED ERROR OCCURRED: {e}\n\n"
 
-    return render_template_string(HTML_TEMPLATE, logs=logs)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    return Response(generate_logs(), mimetype='text/event-stream')
