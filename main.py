@@ -15,8 +15,8 @@ from getpass import getpass # To securely ask for your password
 
 # --- Configuration ---
 # Use a brand new, disposable test account.
-TEST_USERNAME = input("Enter your TEST Instagram username: ")
-TEST_PASSWORD = getpass("Enter your TEST Instagram password (typing will be invisible): ")
+# TEST_USERNAME = input("Enter your TEST Instagram username: ")
+# TEST_PASSWORD = getpass("Enter your TEST Instagram password (typing will be invisible): ")
 
 TEST_USERNAME = "jasser_vk"
 TEST_PASSWORD = "POthan1312"
