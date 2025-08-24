@@ -6,17 +6,18 @@
     <title>Instagram Bot Control Panel</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #121212; color: #E0E0E0; }
+        body { background-color: #121212; color: #E0E0E0; font-family: sans-serif; }
         .card { background-color: #1E1E1E; border: 1px solid #2A2A2A; }
         .console {
             background-color: #000;
-            color: #00FF00; /* Classic green terminal text */
+            color: #00FF00;
             font-family: 'Courier New', Courier, monospace;
             height: 400px;
             overflow-y: scroll;
             border-radius: 5px;
             padding: 15px;
             border: 1px solid #333;
+            white-space: pre-wrap; /* Allows text to wrap */
         }
         .form-control { background-color: #2A2A2A; color: #E0E0E0; border-color: #444; }
         .form-control:focus { background-color: #333; color: #E0E0E0; border-color: #555; box-shadow: none; }
@@ -57,11 +58,8 @@
             <!-- Step 3: Live Console Log -->
             <div id="console-section" class="mt-4">
                 <label class="form-label">Live Log:</label>
-                <div id="console-log" class="console">
-                    &gt; Waiting for you to log in...
-                </div>
+                <div id="console-log" class="console">&gt; Waiting for you to log in...</div>
             </div>
-            <div id="status-message" class="mt-2 text-muted"></div>
         </div>
     </div>
 
@@ -70,15 +68,13 @@
             const loginSection = document.getElementById('login-section');
             const challengeSection = document.getElementById('challenge-section');
             const consoleLog = document.getElementById('console-log');
-            const statusMessage = document.getElementById('status-message');
-            let username = ''; // Store username globally for the session
+            let username = '';
 
             function logToConsole(message) {
-                consoleLog.innerHTML += `\n&gt; ${message.replace(/\n/g, '<br>&gt; ')}`;
-                consoleLog.scrollTop = consoleLog.scrollHeight; // Auto-scroll to bottom
+                consoleLog.innerHTML += `\n&gt; ${message}`;
+                consoleLog.scrollTop = consoleLog.scrollHeight;
             }
 
-            // Handle Login Form Submission
             document.getElementById('login-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 username = document.getElementById('username').value;
@@ -106,11 +102,10 @@
                 }
             });
 
-            // Handle 2FA Challenge Form Submission
             document.getElementById('challenge-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const code = document.getElementById('code').value;
-                logToConsole(`Submitting verification code: ${code}`);
+                logToConsole(`Submitting verification code...`);
                 
                 const response = await fetch('/verify-challenge', {
                     method: 'POST',
@@ -128,18 +123,16 @@
                 }
             });
 
-            // Start listening for real-time logs from the server
             function startEventSource() {
                 const eventSource = new EventSource('/start-actions');
                 eventSource.onmessage = (event) => {
                     logToConsole(event.data);
                     if (event.data.includes("BOT FINISHED")) {
                         eventSource.close();
-                        statusMessage.textContent = "Process complete.";
                     }
                 };
                 eventSource.onerror = (err) => {
-                    logToConsole("Connection to server lost. Process may have finished or an error occurred.");
+                    logToConsole("Connection to server lost.");
                     eventSource.close();
                 };
             }
